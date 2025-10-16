@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:GaitCoach.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:GaitCoachWorkspace.xcworkspace">
+   </FileRef>
+   <FileRef
+      location = "group:AgeAndNorms.swift">
+   </FileRef>
+   <FileRef
+      location = "group:AppTabView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:AppTheme.swift">
+   </FileRef>
+   <FileRef
+      location = "group:AutoRampEngine.swift">
+   </FileRef>
+   <FileRef
+      location = "group:BackgroundMonitor.swift">
+   </FileRef>
+   <FileRef
+      location = "group:BaselineStore.swift">
+   </FileRef>
+   <FileRef
+      location = "group:BodyAxes.swift">
+   </FileRef>
+   <FileRef
+      location = "group:BodyTransform.swift">
+   </FileRef>
+   <FileRef
+      location = "group:CalibrationView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:CitationsView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:DiagnosticsExporter.swift">
+   </FileRef>
+   <FileRef
+      location = "group:ErrorStrip.swift">
+   </FileRef>
+   <FileRef
+      location = "group:ExerciseCatalog.swift">
+   </FileRef>
+   <FileRef
+      location = "group:ExerciseDetailView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:ExercisePlanStore.swift">
+   </FileRef>
+   <FileRef
+      location = "group:ExercisePlayerView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:ExercisesView.swift">
+   </FileRef>
+   <Group
+      location = "group:GaitCoach"
+      name = "GaitCoach">
+      <FileRef
+         location = "group:Assets.xcassets">
+      </FileRef>
+      <FileRef
+         location = "group:GaitCoachTests_PatternTaggerTests">
+      </FileRef>
+      <FileRef
+         location = "group:GaitCoach.entitlements">
+      </FileRef>
+   </Group>
+   <FileRef
+      location = "group:GaitCoachApp.swift">
+   </FileRef>
+   <Group
+      location = "group:GaitCoachTests"
+      name = "GaitCoachTests">
+      <FileRef
+         location = "group:GaitCoachTests.swift">
+      </FileRef>
+   </Group>
+   <Group
+      location = "group:GaitCoachUITests"
+      name = "GaitCoachUITests">
+      <FileRef
+         location = "group:GaitCoachUITestsLaunchTests.swift">
+      </FileRef>
+      <FileRef
+         location = "group:GaitCoachUITests.swift">
+      </FileRef>
+   </Group>
+   <FileRef
+      location = "group:GaitOrientation.swift">
+   </FileRef>
+   <FileRef
+      location = "group:GaitPattern.swift">
+   </FileRef>
+   <FileRef
+      location = "group:GaitPatternDetector.swift">
+   </FileRef>
+   <FileRef
+      location = "group:GaitProgressScreen.swift">
+   </FileRef>
+   <FileRef
+      location = "group:GaitProgressView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:GaitScore.swift">
+   </FileRef>
+   <FileRef
+      location = "group:HapticCoach.swift">
+   </FileRef>
+   <FileRef
+      location = "group:HealthBackground.swift">
+   </FileRef>
+   <FileRef
+      location = "group:HealthKitManager.swift">
+   </FileRef>
+   <FileRef
+      location = "group:Info.plist">
+   </FileRef>
+   <FileRef
+      location = "group:MobilityWatcher.swift">
+   </FileRef>
+   <FileRef
+      location = "group:MoreView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:MotionService.swift">
+   </FileRef>
+   <FileRef
+      location = "group:Muscle.swift">
+   </FileRef>
+   <FileRef
+      location = "group:NudgeBanner.swift">
+   </FileRef>
+   <FileRef
+      location = "group:NudgeLogStore.swift">
+   </FileRef>
+   <FileRef
+      location = "group:OnboardingGait.swift">
+   </FileRef>
+   <FileRef
+      location = "group:OnboardingView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:OrientationCalibrator.swift">
+   </FileRef>
+   <FileRef
+      location = "group:PatternCoachView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:PatternTagger.swift">
+   </FileRef>
+   <FileRef
+      location = "group:PDFExporter.swift">
+   </FileRef>
+   <FileRef
+      location = "group:PocketSide.swift">
+   </FileRef>
+   <FileRef
+      location = "group:ProgressRing.swift">
+   </FileRef>
+   <FileRef
+      location = "group:ProgressViewScreen.swift">
+   </FileRef>
+   <FileRef
+      location = "group:ReportView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:RootTabs.swift">
+   </FileRef>
+   <FileRef
+      location = "group:SafetyDisclaimerView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:SafetyEngine.swift">
+   </FileRef>
+   <FileRef
+      location = "group:ScoreBands.swift">
+   </FileRef>
+   <FileRef
+      location = "group:SessionDetailView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:SessionPDFView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:SessionSummaryStore.swift">
+   </FileRef>
+   <FileRef
+      location = "group:SessionView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:SettingsView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:Sex.swift">
+   </FileRef>
+   <FileRef
+      location = "group:StepMetrics.swift">
+   </FileRef>
+   <FileRef
+      location = "group:TabRouter.swift">
+   </FileRef>
+   <FileRef
+      location = "group:Targeting.swift">
+   </FileRef>
+   <FileRef
+      location = "group:TargetSettingsView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:Theme.swift">
+   </FileRef>
+   <FileRef
+      location = "group:ThemeColours.swift">
+   </FileRef>
+   <FileRef
+      location = "group:TodayView.swift">
+   </FileRef>
+   <FileRef
+      location = "group:Unit.xctestplan">
+   </FileRef>
+   <FileRef
+      location = "group:UserSettingsStore.swift">
+   </FileRef>
+   <FileRef
+      location = "group:VideoLibrary.swift">
+   </FileRef>
+   <FileRef
+      location = "group:VideoLibrary+Pick.swift">
+   </FileRef>
+</Workspace>
