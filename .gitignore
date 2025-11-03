@@ -1,10 +1,22 @@
+# macOS
+.DS_Store
+
 # Xcode
 xcuserdata/
-*.xcuserdatad
-*.xccheckout
-*.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
 DerivedData/
-build/
+*.xcuserstate
+*.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
 
-# SwiftPM
+# Swift Package Manager
 .build/
+
+# CocoaPods
+Pods/
+
+# Archives and temp files
+*.ipa
+*.dSYM.zip
+*.xcarchive
+*.swp
+*.lock
+
