@@ -119,9 +119,6 @@
       location = "group:HealthKitManager.swift">
    </FileRef>
    <FileRef
-      location = "group:Info.plist">
-   </FileRef>
-   <FileRef
       location = "group:MobilityWatcher.swift">
    </FileRef>
    <FileRef

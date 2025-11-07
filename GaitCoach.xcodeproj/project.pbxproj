@@ -6,6 +6,84 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F6275FD82EBD968F000A2DE5 /* HealthMetricCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6275FD72EBD968F000A2DE5 /* HealthMetricCard.swift */; };
+		F6275FE62EBD97D9000A2DE5 /* info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F6275FE52EBD97D9000A2DE5 /* info.plist */; };
+		F6275FE82EBD9BE5000A2DE5 /* BaselineService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6275FE72EBD9BE5000A2DE5 /* BaselineService.swift */; };
+		F6275FFB2EBD9EC7000A2DE5 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6275FFA2EBD9EC7000A2DE5 /* HealthKitManager.swift */; };
+		F6275FFD2EBD9F00000A2DE5 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6275FFC2EBD9F00000A2DE5 /* TodayView.swift */; };
+		F6275FFF2EBD9F0E000A2DE5 /* HealthBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6275FFE2EBD9F0E000A2DE5 /* HealthBackground.swift */; };
+		F627604E2EBD9F2C000A2DE5 /* BaselineStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760052EBD9F2C000A2DE5 /* BaselineStore.swift */; };
+		F627604F2EBD9F2C000A2DE5 /* PocketSide.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760342EBD9F2C000A2DE5 /* PocketSide.swift */; };
+		F62760502EBD9F2C000A2DE5 /* OnboardingGait.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627602E2EBD9F2C000A2DE5 /* OnboardingGait.swift */; };
+		F62760512EBD9F2C000A2DE5 /* BodyTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760072EBD9F2C000A2DE5 /* BodyTransform.swift */; };
+		F62760522EBD9F2C000A2DE5 /* GaitProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760252EBD9F2C000A2DE5 /* GaitProgressView.swift */; };
+		F62760532EBD9F2C000A2DE5 /* ExercisesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760102EBD9F2C000A2DE5 /* ExercisesView.swift */; };
+		F62760542EBD9F2C000A2DE5 /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760372EBD9F2C000A2DE5 /* ReportView.swift */; };
+		F62760552EBD9F2C000A2DE5 /* GaitCoachTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627601B2EBD9F2C000A2DE5 /* GaitCoachTests.swift */; };
+		F62760562EBD9F2C000A2DE5 /* CitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760092EBD9F2C000A2DE5 /* CitationsView.swift */; };
+		F62760572EBD9F2C000A2DE5 /* ExercisePlanStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627600E2EBD9F2C000A2DE5 /* ExercisePlanStore.swift */; };
+		F62760582EBD9F2C000A2DE5 /* DiagnosticsExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627600A2EBD9F2C000A2DE5 /* DiagnosticsExporter.swift */; };
+		F62760592EBD9F2C000A2DE5 /* SessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627603F2EBD9F2C000A2DE5 /* SessionView.swift */; };
+		F627605A2EBD9F2C000A2DE5 /* GaitPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760222EBD9F2C000A2DE5 /* GaitPattern.swift */; };
+		F627605B2EBD9F2C000A2DE5 /* GaitScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760262EBD9F2C000A2DE5 /* GaitScore.swift */; };
+		F627605C2EBD9F2C000A2DE5 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627602F2EBD9F2C000A2DE5 /* OnboardingView.swift */; };
+		F627605D2EBD9F2C000A2DE5 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627603C2EBD9F2C000A2DE5 /* SessionDetailView.swift */; };
+		F627605E2EBD9F2C000A2DE5 /* GaitProgressScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760242EBD9F2C000A2DE5 /* GaitProgressScreen.swift */; };
+		F627605F2EBD9F2C000A2DE5 /* TabRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760432EBD9F2C000A2DE5 /* TabRouter.swift */; };
+		F62760602EBD9F2C000A2DE5 /* ThemeColours.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760472EBD9F2C000A2DE5 /* ThemeColours.swift */; };
+		F62760612EBD9F2C000A2DE5 /* GaitOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760212EBD9F2C000A2DE5 /* GaitOrientation.swift */; };
+		F62760622EBD9F2C000A2DE5 /* AppTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760012EBD9F2C000A2DE5 /* AppTabView.swift */; };
+		F62760632EBD9F2C000A2DE5 /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760332EBD9F2C000A2DE5 /* PDFExporter.swift */; };
+		F62760642EBD9F2C000A2DE5 /* GaitCoachUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627601D2EBD9F2C000A2DE5 /* GaitCoachUITests.swift */; };
+		F62760652EBD9F2C000A2DE5 /* ExerciseCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627600C2EBD9F2C000A2DE5 /* ExerciseCatalog.swift */; };
+		F62760662EBD9F2C000A2DE5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760402EBD9F2C000A2DE5 /* SettingsView.swift */; };
+		F62760672EBD9F2C000A2DE5 /* BodyAxes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760062EBD9F2C000A2DE5 /* BodyAxes.swift */; };
+		F62760682EBD9F2C000A2DE5 /* NudgeLogStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627602D2EBD9F2C000A2DE5 /* NudgeLogStore.swift */; };
+		F62760692EBD9F2C000A2DE5 /* ProgressViewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760362EBD9F2C000A2DE5 /* ProgressViewScreen.swift */; };
+		F627606A2EBD9F2C000A2DE5 /* GaitPatternDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760232EBD9F2C000A2DE5 /* GaitPatternDetector.swift */; };
+		F627606B2EBD9F2C000A2DE5 /* AutoRampEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760032EBD9F2C000A2DE5 /* AutoRampEngine.swift */; };
+		F627606C2EBD9F2C000A2DE5 /* ErrorStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627600B2EBD9F2C000A2DE5 /* ErrorStrip.swift */; };
+		F627606D2EBD9F2C000A2DE5 /* HapticCoach.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760272EBD9F2C000A2DE5 /* HapticCoach.swift */; };
+		F627606E2EBD9F2C000A2DE5 /* CalibrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760082EBD9F2C000A2DE5 /* CalibrationView.swift */; };
+		F627606F2EBD9F2C000A2DE5 /* VideoLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627604A2EBD9F2C000A2DE5 /* VideoLibrary.swift */; };
+		F62760702EBD9F2C000A2DE5 /* SafetyDisclaimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760392EBD9F2C000A2DE5 /* SafetyDisclaimerView.swift */; };
+		F62760712EBD9F2C000A2DE5 /* ExercisePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627600F2EBD9F2C000A2DE5 /* ExercisePlayerView.swift */; };
+		F62760722EBD9F2C000A2DE5 /* ProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760352EBD9F2C000A2DE5 /* ProgressRing.swift */; };
+		F62760732EBD9F2C000A2DE5 /* RootTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760382EBD9F2C000A2DE5 /* RootTabs.swift */; };
+		F62760742EBD9F2C000A2DE5 /* OrientationCalibrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760302EBD9F2C000A2DE5 /* OrientationCalibrator.swift */; };
+		F62760752EBD9F2C000A2DE5 /* SafetyEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627603A2EBD9F2C000A2DE5 /* SafetyEngine.swift */; };
+		F62760762EBD9F2C000A2DE5 /* PatternTagger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760322EBD9F2C000A2DE5 /* PatternTagger.swift */; };
+		F62760772EBD9F2C000A2DE5 /* Sex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760412EBD9F2C000A2DE5 /* Sex.swift */; };
+		F62760782EBD9F2C000A2DE5 /* ScoreBands.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627603B2EBD9F2C000A2DE5 /* ScoreBands.swift */; };
+		F62760792EBD9F2C000A2DE5 /* MobilityWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760282EBD9F2C000A2DE5 /* MobilityWatcher.swift */; };
+		F627607A2EBD9F2C000A2DE5 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760462EBD9F2C000A2DE5 /* Theme.swift */; };
+		F627607B2EBD9F2C000A2DE5 /* ExerciseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627600D2EBD9F2C000A2DE5 /* ExerciseDetailView.swift */; };
+		F627607C2EBD9F2C000A2DE5 /* GaitCoachUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627601E2EBD9F2C000A2DE5 /* GaitCoachUITestsLaunchTests.swift */; };
+		F627607D2EBD9F2C000A2DE5 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760022EBD9F2C000A2DE5 /* AppTheme.swift */; };
+		F627607E2EBD9F2C000A2DE5 /* SessionPDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627603D2EBD9F2C000A2DE5 /* SessionPDFView.swift */; };
+		F627607F2EBD9F2C000A2DE5 /* VideoLibrary+Pick.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627604B2EBD9F2C000A2DE5 /* VideoLibrary+Pick.swift */; };
+		F62760802EBD9F2C000A2DE5 /* BackgroundMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760042EBD9F2C000A2DE5 /* BackgroundMonitor.swift */; };
+		F62760812EBD9F2C000A2DE5 /* Muscle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627602B2EBD9F2C000A2DE5 /* Muscle.swift */; };
+		F62760822EBD9F2C000A2DE5 /* UserSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760492EBD9F2C000A2DE5 /* UserSettingsStore.swift */; };
+		F62760832EBD9F2C000A2DE5 /* NudgeBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627602C2EBD9F2C000A2DE5 /* NudgeBanner.swift */; };
+		F62760842EBD9F2C000A2DE5 /* StepMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760422EBD9F2C000A2DE5 /* StepMetrics.swift */; };
+		F62760852EBD9F2C000A2DE5 /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760292EBD9F2C000A2DE5 /* MoreView.swift */; };
+		F62760862EBD9F2C000A2DE5 /* PatternCoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760312EBD9F2C000A2DE5 /* PatternCoachView.swift */; };
+		F62760872EBD9F2C000A2DE5 /* SessionSummaryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627603E2EBD9F2C000A2DE5 /* SessionSummaryStore.swift */; };
+		F62760882EBD9F2C000A2DE5 /* AgeAndNorms.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760002EBD9F2C000A2DE5 /* AgeAndNorms.swift */; };
+		F62760892EBD9F2C000A2DE5 /* MotionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627602A2EBD9F2C000A2DE5 /* MotionService.swift */; };
+		F627608A2EBD9F2C000A2DE5 /* TargetSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760452EBD9F2C000A2DE5 /* TargetSettingsView.swift */; };
+		F627608B2EBD9F2C000A2DE5 /* GaitCoachApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627601A2EBD9F2C000A2DE5 /* GaitCoachApp.swift */; };
+		F627608C2EBD9F2C000A2DE5 /* Targeting.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62760442EBD9F2C000A2DE5 /* Targeting.swift */; };
+		F627608D2EBD9F2C000A2DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F62760152EBD9F2C000A2DE5 /* Assets.xcassets */; };
+		F627608E2EBD9F2C000A2DE5 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = F62760142EBD9F2C000A2DE5 /* .gitignore */; };
+		F627608F2EBD9F2C000A2DE5 /* ci.yml in Resources */ = {isa = PBXBuildFile; fileRef = F62760112EBD9F2C000A2DE5 /* ci.yml */; };
+		F62760902EBD9F2C000A2DE5 /* GaitCoachTests_PatternTaggerTests in Resources */ = {isa = PBXBuildFile; fileRef = F62760172EBD9F2C000A2DE5 /* GaitCoachTests_PatternTaggerTests */; };
+		F62760912EBD9F2C000A2DE5 /* Unit.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = F62760482EBD9F2C000A2DE5 /* Unit.xctestplan */; };
+		F62760922EBD9F2C000A2DE5 /* GaitCoachWorkspace.xcworkspace in Resources */ = {isa = PBXBuildFile; fileRef = F62760202EBD9F2C000A2DE5 /* GaitCoachWorkspace.xcworkspace */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		F654FB222EA0824F00E6A793 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +102,83 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F6275FD72EBD968F000A2DE5 /* HealthMetricCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthMetricCard.swift; sourceTree = "<group>"; };
+		F6275FE52EBD97D9000A2DE5 /* info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = info.plist; sourceTree = "<group>"; };
+		F6275FE72EBD9BE5000A2DE5 /* BaselineService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaselineService.swift; sourceTree = "<group>"; };
+		F6275FFA2EBD9EC7000A2DE5 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
+		F6275FFC2EBD9F00000A2DE5 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
+		F6275FFE2EBD9F0E000A2DE5 /* HealthBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthBackground.swift; sourceTree = "<group>"; };
+		F62760002EBD9F2C000A2DE5 /* AgeAndNorms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeAndNorms.swift; sourceTree = "<group>"; };
+		F62760012EBD9F2C000A2DE5 /* AppTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabView.swift; sourceTree = "<group>"; };
+		F62760022EBD9F2C000A2DE5 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		F62760032EBD9F2C000A2DE5 /* AutoRampEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoRampEngine.swift; sourceTree = "<group>"; };
+		F62760042EBD9F2C000A2DE5 /* BackgroundMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundMonitor.swift; sourceTree = "<group>"; };
+		F62760052EBD9F2C000A2DE5 /* BaselineStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaselineStore.swift; sourceTree = "<group>"; };
+		F62760062EBD9F2C000A2DE5 /* BodyAxes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyAxes.swift; sourceTree = "<group>"; };
+		F62760072EBD9F2C000A2DE5 /* BodyTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyTransform.swift; sourceTree = "<group>"; };
+		F62760082EBD9F2C000A2DE5 /* CalibrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationView.swift; sourceTree = "<group>"; };
+		F62760092EBD9F2C000A2DE5 /* CitationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitationsView.swift; sourceTree = "<group>"; };
+		F627600A2EBD9F2C000A2DE5 /* DiagnosticsExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsExporter.swift; sourceTree = "<group>"; };
+		F627600B2EBD9F2C000A2DE5 /* ErrorStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorStrip.swift; sourceTree = "<group>"; };
+		F627600C2EBD9F2C000A2DE5 /* ExerciseCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseCatalog.swift; sourceTree = "<group>"; };
+		F627600D2EBD9F2C000A2DE5 /* ExerciseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseDetailView.swift; sourceTree = "<group>"; };
+		F627600E2EBD9F2C000A2DE5 /* ExercisePlanStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisePlanStore.swift; sourceTree = "<group>"; };
+		F627600F2EBD9F2C000A2DE5 /* ExercisePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisePlayerView.swift; sourceTree = "<group>"; };
+		F62760102EBD9F2C000A2DE5 /* ExercisesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisesView.swift; sourceTree = "<group>"; };
+		F62760112EBD9F2C000A2DE5 /* ci.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = ci.yml; sourceTree = "<group>"; };
+		F62760142EBD9F2C000A2DE5 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		F62760152EBD9F2C000A2DE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F62760162EBD9F2C000A2DE5 /* GaitCoach.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GaitCoach.entitlements; sourceTree = "<group>"; };
+		F62760172EBD9F2C000A2DE5 /* GaitCoachTests_PatternTaggerTests */ = {isa = PBXFileReference; lastKnownFileType = text; path = GaitCoachTests_PatternTaggerTests; sourceTree = "<group>"; };
+		F62760192EBD9F2C000A2DE5 /* GaitCoach.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = GaitCoach.xcodeproj; sourceTree = "<group>"; };
+		F627601A2EBD9F2C000A2DE5 /* GaitCoachApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GaitCoachApp.swift; sourceTree = "<group>"; };
+		F627601B2EBD9F2C000A2DE5 /* GaitCoachTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GaitCoachTests.swift; sourceTree = "<group>"; };
+		F627601D2EBD9F2C000A2DE5 /* GaitCoachUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GaitCoachUITests.swift; sourceTree = "<group>"; };
+		F627601E2EBD9F2C000A2DE5 /* GaitCoachUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GaitCoachUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		F62760202EBD9F2C000A2DE5 /* GaitCoachWorkspace.xcworkspace */ = {isa = PBXFileReference; lastKnownFileType = wrapper.workspace; path = GaitCoachWorkspace.xcworkspace; sourceTree = "<group>"; };
+		F62760212EBD9F2C000A2DE5 /* GaitOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GaitOrientation.swift; sourceTree = "<group>"; };
+		F62760222EBD9F2C000A2DE5 /* GaitPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GaitPattern.swift; sourceTree = "<group>"; };
+		F62760232EBD9F2C000A2DE5 /* GaitPatternDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GaitPatternDetector.swift; sourceTree = "<group>"; };
+		F62760242EBD9F2C000A2DE5 /* GaitProgressScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GaitProgressScreen.swift; sourceTree = "<group>"; };
+		F62760252EBD9F2C000A2DE5 /* GaitProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GaitProgressView.swift; sourceTree = "<group>"; };
+		F62760262EBD9F2C000A2DE5 /* GaitScore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GaitScore.swift; sourceTree = "<group>"; };
+		F62760272EBD9F2C000A2DE5 /* HapticCoach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticCoach.swift; sourceTree = "<group>"; };
+		F62760282EBD9F2C000A2DE5 /* MobilityWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobilityWatcher.swift; sourceTree = "<group>"; };
+		F62760292EBD9F2C000A2DE5 /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
+		F627602A2EBD9F2C000A2DE5 /* MotionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionService.swift; sourceTree = "<group>"; };
+		F627602B2EBD9F2C000A2DE5 /* Muscle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Muscle.swift; sourceTree = "<group>"; };
+		F627602C2EBD9F2C000A2DE5 /* NudgeBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgeBanner.swift; sourceTree = "<group>"; };
+		F627602D2EBD9F2C000A2DE5 /* NudgeLogStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NudgeLogStore.swift; sourceTree = "<group>"; };
+		F627602E2EBD9F2C000A2DE5 /* OnboardingGait.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingGait.swift; sourceTree = "<group>"; };
+		F627602F2EBD9F2C000A2DE5 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		F62760302EBD9F2C000A2DE5 /* OrientationCalibrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationCalibrator.swift; sourceTree = "<group>"; };
+		F62760312EBD9F2C000A2DE5 /* PatternCoachView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatternCoachView.swift; sourceTree = "<group>"; };
+		F62760322EBD9F2C000A2DE5 /* PatternTagger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatternTagger.swift; sourceTree = "<group>"; };
+		F62760332EBD9F2C000A2DE5 /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExporter.swift; sourceTree = "<group>"; };
+		F62760342EBD9F2C000A2DE5 /* PocketSide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketSide.swift; sourceTree = "<group>"; };
+		F62760352EBD9F2C000A2DE5 /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
+		F62760362EBD9F2C000A2DE5 /* ProgressViewScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewScreen.swift; sourceTree = "<group>"; };
+		F62760372EBD9F2C000A2DE5 /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportView.swift; sourceTree = "<group>"; };
+		F62760382EBD9F2C000A2DE5 /* RootTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabs.swift; sourceTree = "<group>"; };
+		F62760392EBD9F2C000A2DE5 /* SafetyDisclaimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyDisclaimerView.swift; sourceTree = "<group>"; };
+		F627603A2EBD9F2C000A2DE5 /* SafetyEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyEngine.swift; sourceTree = "<group>"; };
+		F627603B2EBD9F2C000A2DE5 /* ScoreBands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBands.swift; sourceTree = "<group>"; };
+		F627603C2EBD9F2C000A2DE5 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
+		F627603D2EBD9F2C000A2DE5 /* SessionPDFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionPDFView.swift; sourceTree = "<group>"; };
+		F627603E2EBD9F2C000A2DE5 /* SessionSummaryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSummaryStore.swift; sourceTree = "<group>"; };
+		F627603F2EBD9F2C000A2DE5 /* SessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionView.swift; sourceTree = "<group>"; };
+		F62760402EBD9F2C000A2DE5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		F62760412EBD9F2C000A2DE5 /* Sex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sex.swift; sourceTree = "<group>"; };
+		F62760422EBD9F2C000A2DE5 /* StepMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepMetrics.swift; sourceTree = "<group>"; };
+		F62760432EBD9F2C000A2DE5 /* TabRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabRouter.swift; sourceTree = "<group>"; };
+		F62760442EBD9F2C000A2DE5 /* Targeting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Targeting.swift; sourceTree = "<group>"; };
+		F62760452EBD9F2C000A2DE5 /* TargetSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetSettingsView.swift; sourceTree = "<group>"; };
+		F62760462EBD9F2C000A2DE5 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		F62760472EBD9F2C000A2DE5 /* ThemeColours.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeColours.swift; sourceTree = "<group>"; };
+		F62760482EBD9F2C000A2DE5 /* Unit.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Unit.xctestplan; sourceTree = "<group>"; };
+		F62760492EBD9F2C000A2DE5 /* UserSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsStore.swift; sourceTree = "<group>"; };
+		F627604A2EBD9F2C000A2DE5 /* VideoLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoLibrary.swift; sourceTree = "<group>"; };
+		F627604B2EBD9F2C000A2DE5 /* VideoLibrary+Pick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VideoLibrary+Pick.swift"; sourceTree = "<group>"; };
 		F654FB132EA0824E00E6A793 /* GaitCoach.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GaitCoach.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F654FB212EA0824F00E6A793 /* GaitCoachTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GaitCoachTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F654FB2B2EA0824F00E6A793 /* GaitCoachUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GaitCoachUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,9 +227,131 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F62760122EBD9F2C000A2DE5 /* workflows */ = {
+			isa = PBXGroup;
+			children = (
+				F62760112EBD9F2C000A2DE5 /* ci.yml */,
+			);
+			path = workflows;
+			sourceTree = "<group>";
+		};
+		F62760132EBD9F2C000A2DE5 /* .github */ = {
+			isa = PBXGroup;
+			children = (
+				F62760122EBD9F2C000A2DE5 /* workflows */,
+			);
+			path = .github;
+			sourceTree = "<group>";
+		};
+		F62760182EBD9F2C000A2DE5 /* GaitCoach */ = {
+			isa = PBXGroup;
+			children = (
+				F62760132EBD9F2C000A2DE5 /* .github */,
+				F62760142EBD9F2C000A2DE5 /* .gitignore */,
+				F62760152EBD9F2C000A2DE5 /* Assets.xcassets */,
+				F62760162EBD9F2C000A2DE5 /* GaitCoach.entitlements */,
+				F62760172EBD9F2C000A2DE5 /* GaitCoachTests_PatternTaggerTests */,
+			);
+			path = GaitCoach;
+			sourceTree = "<group>";
+		};
+		F627601C2EBD9F2C000A2DE5 /* GaitCoachTests */ = {
+			isa = PBXGroup;
+			children = (
+				F627601B2EBD9F2C000A2DE5 /* GaitCoachTests.swift */,
+			);
+			path = GaitCoachTests;
+			sourceTree = "<group>";
+		};
+		F627601F2EBD9F2C000A2DE5 /* GaitCoachUITests */ = {
+			isa = PBXGroup;
+			children = (
+				F627601D2EBD9F2C000A2DE5 /* GaitCoachUITests.swift */,
+				F627601E2EBD9F2C000A2DE5 /* GaitCoachUITestsLaunchTests.swift */,
+			);
+			path = GaitCoachUITests;
+			sourceTree = "<group>";
+		};
+		F627604C2EBD9F2C000A2DE5 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
 		F654FB0A2EA0824E00E6A793 = {
 			isa = PBXGroup;
 			children = (
+				F62760002EBD9F2C000A2DE5 /* AgeAndNorms.swift */,
+				F62760012EBD9F2C000A2DE5 /* AppTabView.swift */,
+				F62760022EBD9F2C000A2DE5 /* AppTheme.swift */,
+				F62760032EBD9F2C000A2DE5 /* AutoRampEngine.swift */,
+				F62760042EBD9F2C000A2DE5 /* BackgroundMonitor.swift */,
+				F62760052EBD9F2C000A2DE5 /* BaselineStore.swift */,
+				F62760062EBD9F2C000A2DE5 /* BodyAxes.swift */,
+				F62760072EBD9F2C000A2DE5 /* BodyTransform.swift */,
+				F62760082EBD9F2C000A2DE5 /* CalibrationView.swift */,
+				F62760092EBD9F2C000A2DE5 /* CitationsView.swift */,
+				F627600A2EBD9F2C000A2DE5 /* DiagnosticsExporter.swift */,
+				F627600B2EBD9F2C000A2DE5 /* ErrorStrip.swift */,
+				F627600C2EBD9F2C000A2DE5 /* ExerciseCatalog.swift */,
+				F627600D2EBD9F2C000A2DE5 /* ExerciseDetailView.swift */,
+				F627600E2EBD9F2C000A2DE5 /* ExercisePlanStore.swift */,
+				F627600F2EBD9F2C000A2DE5 /* ExercisePlayerView.swift */,
+				F62760102EBD9F2C000A2DE5 /* ExercisesView.swift */,
+				F62760182EBD9F2C000A2DE5 /* GaitCoach */,
+				F62760192EBD9F2C000A2DE5 /* GaitCoach.xcodeproj */,
+				F627601A2EBD9F2C000A2DE5 /* GaitCoachApp.swift */,
+				F627601C2EBD9F2C000A2DE5 /* GaitCoachTests */,
+				F627601F2EBD9F2C000A2DE5 /* GaitCoachUITests */,
+				F62760202EBD9F2C000A2DE5 /* GaitCoachWorkspace.xcworkspace */,
+				F62760212EBD9F2C000A2DE5 /* GaitOrientation.swift */,
+				F62760222EBD9F2C000A2DE5 /* GaitPattern.swift */,
+				F62760232EBD9F2C000A2DE5 /* GaitPatternDetector.swift */,
+				F62760242EBD9F2C000A2DE5 /* GaitProgressScreen.swift */,
+				F62760252EBD9F2C000A2DE5 /* GaitProgressView.swift */,
+				F62760262EBD9F2C000A2DE5 /* GaitScore.swift */,
+				F62760272EBD9F2C000A2DE5 /* HapticCoach.swift */,
+				F62760282EBD9F2C000A2DE5 /* MobilityWatcher.swift */,
+				F62760292EBD9F2C000A2DE5 /* MoreView.swift */,
+				F627602A2EBD9F2C000A2DE5 /* MotionService.swift */,
+				F627602B2EBD9F2C000A2DE5 /* Muscle.swift */,
+				F627602C2EBD9F2C000A2DE5 /* NudgeBanner.swift */,
+				F627602D2EBD9F2C000A2DE5 /* NudgeLogStore.swift */,
+				F627602E2EBD9F2C000A2DE5 /* OnboardingGait.swift */,
+				F627602F2EBD9F2C000A2DE5 /* OnboardingView.swift */,
+				F62760302EBD9F2C000A2DE5 /* OrientationCalibrator.swift */,
+				F62760312EBD9F2C000A2DE5 /* PatternCoachView.swift */,
+				F62760322EBD9F2C000A2DE5 /* PatternTagger.swift */,
+				F62760332EBD9F2C000A2DE5 /* PDFExporter.swift */,
+				F62760342EBD9F2C000A2DE5 /* PocketSide.swift */,
+				F62760352EBD9F2C000A2DE5 /* ProgressRing.swift */,
+				F62760362EBD9F2C000A2DE5 /* ProgressViewScreen.swift */,
+				F62760372EBD9F2C000A2DE5 /* ReportView.swift */,
+				F62760382EBD9F2C000A2DE5 /* RootTabs.swift */,
+				F62760392EBD9F2C000A2DE5 /* SafetyDisclaimerView.swift */,
+				F627603A2EBD9F2C000A2DE5 /* SafetyEngine.swift */,
+				F627603B2EBD9F2C000A2DE5 /* ScoreBands.swift */,
+				F627603C2EBD9F2C000A2DE5 /* SessionDetailView.swift */,
+				F627603D2EBD9F2C000A2DE5 /* SessionPDFView.swift */,
+				F627603E2EBD9F2C000A2DE5 /* SessionSummaryStore.swift */,
+				F627603F2EBD9F2C000A2DE5 /* SessionView.swift */,
+				F62760402EBD9F2C000A2DE5 /* SettingsView.swift */,
+				F62760412EBD9F2C000A2DE5 /* Sex.swift */,
+				F62760422EBD9F2C000A2DE5 /* StepMetrics.swift */,
+				F62760432EBD9F2C000A2DE5 /* TabRouter.swift */,
+				F62760442EBD9F2C000A2DE5 /* Targeting.swift */,
+				F62760452EBD9F2C000A2DE5 /* TargetSettingsView.swift */,
+				F62760462EBD9F2C000A2DE5 /* Theme.swift */,
+				F62760472EBD9F2C000A2DE5 /* ThemeColours.swift */,
+				F62760482EBD9F2C000A2DE5 /* Unit.xctestplan */,
+				F62760492EBD9F2C000A2DE5 /* UserSettingsStore.swift */,
+				F627604A2EBD9F2C000A2DE5 /* VideoLibrary.swift */,
+				F627604B2EBD9F2C000A2DE5 /* VideoLibrary+Pick.swift */,
+				F6275FFE2EBD9F0E000A2DE5 /* HealthBackground.swift */,
+				F6275FFC2EBD9F00000A2DE5 /* TodayView.swift */,
+				F6275FFA2EBD9EC7000A2DE5 /* HealthKitManager.swift */,
+				F6275FE72EBD9BE5000A2DE5 /* BaselineService.swift */,
+				F6275FE52EBD97D9000A2DE5 /* info.plist */,
+				F6275FD72EBD968F000A2DE5 /* HealthMetricCard.swift */,
 				F654FB152EA0824E00E6A793 /* GaitCoach */,
 				F654FB242EA0824F00E6A793 /* GaitCoachTests */,
 				F654FB2E2EA0824F00E6A793 /* GaitCoachUITests */,
@@ -175,6 +452,7 @@
 				TargetAttributes = {
 					F654FB122EA0824E00E6A793 = {
 						CreatedOnToolsVersion = 16.4;
+						LastSwiftMigration = 1640;
 					};
 					F654FB202EA0824F00E6A793 = {
 						CreatedOnToolsVersion = 16.4;
@@ -198,6 +476,12 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F654FB142EA0824E00E6A793 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = F627604C2EBD9F2C000A2DE5 /* Products */;
+					ProjectRef = F62760192EBD9F2C000A2DE5 /* GaitCoach.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				F654FB122EA0824E00E6A793 /* GaitCoach */,
@@ -212,6 +496,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6275FE62EBD97D9000A2DE5 /* info.plist in Resources */,
+				F627608D2EBD9F2C000A2DE5 /* Assets.xcassets in Resources */,
+				F627608E2EBD9F2C000A2DE5 /* .gitignore in Resources */,
+				F627608F2EBD9F2C000A2DE5 /* ci.yml in Resources */,
+				F62760902EBD9F2C000A2DE5 /* GaitCoachTests_PatternTaggerTests in Resources */,
+				F62760912EBD9F2C000A2DE5 /* Unit.xctestplan in Resources */,
+				F62760922EBD9F2C000A2DE5 /* GaitCoachWorkspace.xcworkspace in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +527,74 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6275FE82EBD9BE5000A2DE5 /* BaselineService.swift in Sources */,
+				F6275FD82EBD968F000A2DE5 /* HealthMetricCard.swift in Sources */,
+				F627604E2EBD9F2C000A2DE5 /* BaselineStore.swift in Sources */,
+				F627604F2EBD9F2C000A2DE5 /* PocketSide.swift in Sources */,
+				F62760502EBD9F2C000A2DE5 /* OnboardingGait.swift in Sources */,
+				F62760512EBD9F2C000A2DE5 /* BodyTransform.swift in Sources */,
+				F62760522EBD9F2C000A2DE5 /* GaitProgressView.swift in Sources */,
+				F62760532EBD9F2C000A2DE5 /* ExercisesView.swift in Sources */,
+				F62760542EBD9F2C000A2DE5 /* ReportView.swift in Sources */,
+				F62760552EBD9F2C000A2DE5 /* GaitCoachTests.swift in Sources */,
+				F62760562EBD9F2C000A2DE5 /* CitationsView.swift in Sources */,
+				F62760572EBD9F2C000A2DE5 /* ExercisePlanStore.swift in Sources */,
+				F62760582EBD9F2C000A2DE5 /* DiagnosticsExporter.swift in Sources */,
+				F62760592EBD9F2C000A2DE5 /* SessionView.swift in Sources */,
+				F627605A2EBD9F2C000A2DE5 /* GaitPattern.swift in Sources */,
+				F627605B2EBD9F2C000A2DE5 /* GaitScore.swift in Sources */,
+				F627605C2EBD9F2C000A2DE5 /* OnboardingView.swift in Sources */,
+				F627605D2EBD9F2C000A2DE5 /* SessionDetailView.swift in Sources */,
+				F627605E2EBD9F2C000A2DE5 /* GaitProgressScreen.swift in Sources */,
+				F627605F2EBD9F2C000A2DE5 /* TabRouter.swift in Sources */,
+				F62760602EBD9F2C000A2DE5 /* ThemeColours.swift in Sources */,
+				F62760612EBD9F2C000A2DE5 /* GaitOrientation.swift in Sources */,
+				F62760622EBD9F2C000A2DE5 /* AppTabView.swift in Sources */,
+				F62760632EBD9F2C000A2DE5 /* PDFExporter.swift in Sources */,
+				F62760642EBD9F2C000A2DE5 /* GaitCoachUITests.swift in Sources */,
+				F62760652EBD9F2C000A2DE5 /* ExerciseCatalog.swift in Sources */,
+				F62760662EBD9F2C000A2DE5 /* SettingsView.swift in Sources */,
+				F62760672EBD9F2C000A2DE5 /* BodyAxes.swift in Sources */,
+				F62760682EBD9F2C000A2DE5 /* NudgeLogStore.swift in Sources */,
+				F62760692EBD9F2C000A2DE5 /* ProgressViewScreen.swift in Sources */,
+				F627606A2EBD9F2C000A2DE5 /* GaitPatternDetector.swift in Sources */,
+				F627606B2EBD9F2C000A2DE5 /* AutoRampEngine.swift in Sources */,
+				F627606C2EBD9F2C000A2DE5 /* ErrorStrip.swift in Sources */,
+				F627606D2EBD9F2C000A2DE5 /* HapticCoach.swift in Sources */,
+				F627606E2EBD9F2C000A2DE5 /* CalibrationView.swift in Sources */,
+				F627606F2EBD9F2C000A2DE5 /* VideoLibrary.swift in Sources */,
+				F62760702EBD9F2C000A2DE5 /* SafetyDisclaimerView.swift in Sources */,
+				F62760712EBD9F2C000A2DE5 /* ExercisePlayerView.swift in Sources */,
+				F62760722EBD9F2C000A2DE5 /* ProgressRing.swift in Sources */,
+				F62760732EBD9F2C000A2DE5 /* RootTabs.swift in Sources */,
+				F62760742EBD9F2C000A2DE5 /* OrientationCalibrator.swift in Sources */,
+				F62760752EBD9F2C000A2DE5 /* SafetyEngine.swift in Sources */,
+				F62760762EBD9F2C000A2DE5 /* PatternTagger.swift in Sources */,
+				F62760772EBD9F2C000A2DE5 /* Sex.swift in Sources */,
+				F62760782EBD9F2C000A2DE5 /* ScoreBands.swift in Sources */,
+				F62760792EBD9F2C000A2DE5 /* MobilityWatcher.swift in Sources */,
+				F627607A2EBD9F2C000A2DE5 /* Theme.swift in Sources */,
+				F627607B2EBD9F2C000A2DE5 /* ExerciseDetailView.swift in Sources */,
+				F627607C2EBD9F2C000A2DE5 /* GaitCoachUITestsLaunchTests.swift in Sources */,
+				F627607D2EBD9F2C000A2DE5 /* AppTheme.swift in Sources */,
+				F627607E2EBD9F2C000A2DE5 /* SessionPDFView.swift in Sources */,
+				F627607F2EBD9F2C000A2DE5 /* VideoLibrary+Pick.swift in Sources */,
+				F62760802EBD9F2C000A2DE5 /* BackgroundMonitor.swift in Sources */,
+				F62760812EBD9F2C000A2DE5 /* Muscle.swift in Sources */,
+				F62760822EBD9F2C000A2DE5 /* UserSettingsStore.swift in Sources */,
+				F62760832EBD9F2C000A2DE5 /* NudgeBanner.swift in Sources */,
+				F62760842EBD9F2C000A2DE5 /* StepMetrics.swift in Sources */,
+				F62760852EBD9F2C000A2DE5 /* MoreView.swift in Sources */,
+				F62760862EBD9F2C000A2DE5 /* PatternCoachView.swift in Sources */,
+				F62760872EBD9F2C000A2DE5 /* SessionSummaryStore.swift in Sources */,
+				F62760882EBD9F2C000A2DE5 /* AgeAndNorms.swift in Sources */,
+				F62760892EBD9F2C000A2DE5 /* MotionService.swift in Sources */,
+				F627608A2EBD9F2C000A2DE5 /* TargetSettingsView.swift in Sources */,
+				F627608B2EBD9F2C000A2DE5 /* GaitCoachApp.swift in Sources */,
+				F627608C2EBD9F2C000A2DE5 /* Targeting.swift in Sources */,
+				F6275FFF2EBD9F0E000A2DE5 /* HealthBackground.swift in Sources */,
+				F6275FFD2EBD9F00000A2DE5 /* TodayView.swift in Sources */,
+				F6275FFB2EBD9EC7000A2DE5 /* HealthKitManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,6 +747,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = GaitCoach/GaitCoach.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -415,6 +775,7 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 2.5;
@@ -426,6 +787,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = GaitCoach/GaitCoach.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
