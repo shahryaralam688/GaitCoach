@@ -3,7 +3,6 @@ import UIKit
 
 struct SettingsView: View {
     @ObservedObject private var settings = UserSettingsStore.shared
-    @AppStorage(AgentDebugLog.enabledKey) private var agentLogEnabled = false
 
     var body: some View {
         List {
@@ -90,13 +89,6 @@ struct SettingsView: View {
                 }
 
                 Text("Shown pace uses motion sensors + step length — not GPS. Calibrate stride under Calibration so estimates track your real walk/run.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-
-            Section("Diagnostics") {
-                Toggle("Record motion debug log", isOn: $agentLogEnabled)
-                Text("Writes anonymized gait NDJSON locally and optional POST from Walk → Calibration when Mac ingest host is set. Turn off after capture.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }

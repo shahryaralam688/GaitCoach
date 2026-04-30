@@ -29,26 +29,3 @@ struct DiagnosticsExportButton: View {
             .buttonStyle(.bordered)
     }
 }
-
-/// Shares `Documents/debug-b248b4.ndjson` when logging is enabled (Settings).
-struct DebugNdjsonShareLink: View {
-    var body: some View {
-        Group {
-            if let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-                let url = doc.appendingPathComponent("debug-b248b4.ndjson")
-                if FileManager.default.fileExists(atPath: url.path) {
-                    ShareLink(item: url, preview: SharePreview("debug-b248b4.ndjson")) {
-                        Label("Share gait debug log", systemImage: "ladybug.fill")
-                    }
-                    Text("Save on Mac as debug-b248b4.log in the project .cursor folder.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else {
-                    Text("Walk once with logging enabled — then export.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-        }
-    }
-}

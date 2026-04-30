@@ -10,12 +10,5 @@
 	<string>This app reads your walking and mobility data to help coach your gait.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>This app writes mobility data to keep your health records complete.</string>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>DEBUG: sends anonymized gait metrics to your Mac (same Wi‑Fi) when you set “Mac ingest host” so Cursor can record NDJSON logs.</string>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
-	</dict>
 </dict>
 </plist>
