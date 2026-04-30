@@ -123,17 +123,19 @@ final class LocomotionFusion {
             return
         }
 
-        let tau = 0.55
+        // Slower decay so shuttle / turn-around gaps don’t zero speed between real steps (~100 Hz ticks).
+        let tau = 1.45
         speedEMA *= exp(-dt / tau)
-        if speedEMA < 0.06 { speedEMA = 0 }
+        if speedEMA < 0.035 { speedEMA = 0 }
         speedMps = speedEMA
     }
 
     /// Update pace from time between consecutive strikes (seconds) and stride length (meters).
+    /// Uses capped step period so long gaps at turns still refresh pace (shuttle / line walks).
     func ingestWalkStepSpeed(strideLengthM: Double, stepPeriod: TimeInterval) {
         lock.lock()
         defer { lock.unlock() }
-        guard stepPeriod > 0.28, stepPeriod < 2.2, strideLengthM > 0.2 else { return }
+        guard stepPeriod > 0.22, stepPeriod < 4.2, strideLengthM > 0.2 else { return }
         let instSpeed = min(4.8, strideLengthM / stepPeriod)
         speedEMA = speedEMA == 0 ? instSpeed : (speedAlpha * instSpeed + (1 - speedAlpha) * speedEMA)
         speedMps = speedEMA

@@ -272,7 +272,7 @@ final class MotionServiceDevice: MotionServiceType {
 
             self.fusion.ingestHeading(yawRadians: dm.attitude.yaw)
 
-            if self.lastCadenceTimestamp > 0, now - self.lastCadenceTimestamp > 1.85 {
+            if self.lastCadenceTimestamp > 0, now - self.lastCadenceTimestamp > 3.2 {
                 self.cadenceLock.lock()
                 self.cadenceForFusion = 0
                 self.cadenceLock.unlock()
@@ -329,9 +329,13 @@ final class MotionServiceDevice: MotionServiceType {
                 var stepPeriodForSpeed: TimeInterval?
                 if self.lastCadenceTimestamp > 0 {
                     let dtStep = now - self.lastCadenceTimestamp
-                    if dtStep > 0.25 && dtStep < 2.0 {
-                        stepPeriodForSpeed = dtStep
-                        newCadenceSPM = min(200, max(0, 60.0 / dtStep))
+                    // Shuttle / turn: gaps may exceed 2 s — still refresh speed; cadence UI only when rhythm is plausible.
+                    if dtStep > 0.22 && dtStep < 6.5 {
+                        let periodSpeed = min(max(dtStep, 0.28), 3.5)
+                        stepPeriodForSpeed = periodSpeed
+                        if dtStep <= 2.8 {
+                            newCadenceSPM = min(200, max(0, 60.0 / dtStep))
+                        }
                     }
                 }
                 self.lastCadenceTimestamp = now
@@ -362,7 +366,7 @@ final class MotionServiceDevice: MotionServiceType {
                 self.planarXM = tel.planarXM
                 self.planarYM = tel.planarYM
 
-                let cadenceIdle = lastCadTS > 0 && (now - lastCadTS) > 1.85
+                let cadenceIdle = lastCadTS > 0 && (now - lastCadTS) > 3.2
                 if cadenceIdle {
                     self.cadenceSPM = 0
                 }
