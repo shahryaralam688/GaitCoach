@@ -112,6 +112,10 @@ final class MotionServiceDevice: MotionServiceType {
     private let fusion = LocomotionFusion()
     private let pedCadence = PedometerCadenceMonitor()
 
+    private var pedSessionAnchor = Date()
+    private var pedPollTimer: DispatchSourceTimer?
+    private let pedPollQueue = DispatchQueue(label: "gaitcoach.pedometer.poll")
+
     private let snapshotLock = NSLock()
     private var motionSnapshot = MotionProcessingSnapshot()
 
@@ -230,34 +234,46 @@ final class MotionServiceDevice: MotionServiceType {
         peakGsRing.removeAll()
 
         pedCadence.stop()
+        pedPollTimer?.cancel()
+        pedPollTimer = nil
+
+        pedSessionAnchor = Date()
+        pedCadence.resetBaselines()
+
         let pedSnap = readMotionSnapshot()
         let usePedCadence =
             pedSnap.carryMode == .handheld
             && pedSnap.integration.locomotionSurface != .treadmill
             && CMPedometer.isStepCountingAvailable()
+
         if usePedCadence {
-            let startPed = Date()
-            pedCadence.start(from: startPed, targetQueue: queue) { [weak self] spm in
+            pedCadence.start(from: pedSessionAnchor, targetQueue: queue) { [weak self] hint in
+                self?.applyHandheldPedHint(hint)
+            }
+
+            let timer = DispatchSource.makeTimerSource(queue: pedPollQueue)
+            timer.schedule(deadline: .now() + 0.55, repeating: DispatchTimeInterval.milliseconds(820))
+            timer.setEventHandler { [weak self] in
                 guard let self else { return }
                 let snap = self.readMotionSnapshot()
                 guard snap.carryMode == .handheld,
-                      snap.integration.locomotionSurface != .treadmill
+                      snap.integration.locomotionSurface != .treadmill,
+                      CMPedometer.isStepCountingAvailable()
                 else { return }
 
-                var stride = max(self.lastStrideM, 0.28)
-                if stride < 0.42 {
-                    stride = LocomotionMath.strideLengthMeters(
-                        peakAccelG: 0.48,
-                        weinbergK: snap.weinbergK,
-                        heightCm: snap.heightCm
-                    )
+                let from = self.pedSessionAnchor
+                let now = Date()
+                self.pedCadence.queryAccumulated(from: from, to: now) { [weak self] data, err in
+                    guard let self, err == nil, let data else { return }
+                    self.queue.addOperation {
+                        let hint = self.pedCadence.hintFromQuerySnapshot(data)
+                        guard hint.hasSignal else { return }
+                        self.applyHandheldPedHint(hint)
+                    }
                 }
-                self.fusion.ingestCadenceBackedSpeed(
-                    strideLengthM: stride,
-                    cadenceSPM: spm,
-                    paceKind: snap.integration.paceSessionKind
-                )
             }
+            pedPollTimer = timer
+            timer.resume()
         }
 
         mm.deviceMotionUpdateInterval = 1.0 / 100.0
@@ -382,7 +398,12 @@ final class MotionServiceDevice: MotionServiceType {
                 self.lastCadenceTimestamp = now
 
                 if let period = stepPeriodForSpeed {
-                    self.fusion.ingestWalkStepSpeed(strideLengthM: stride, stepPeriod: period, paceKind: paceKind)
+                    self.fusion.ingestWalkStepSpeed(
+                        strideLengthM: stride,
+                        stepPeriod: period,
+                        paceKind: paceKind,
+                        carryMode: snap.carryMode
+                    )
                 }
 
                 pendingStep = PendingStepUI(
@@ -430,9 +451,32 @@ final class MotionServiceDevice: MotionServiceType {
     }
 
     func stop() {
+        pedPollTimer?.cancel()
+        pedPollTimer = nil
         pedCadence.stop()
         mm.stopDeviceMotionUpdates()
         lastMotionTimestamp = nil
+    }
+
+    private func applyHandheldPedHint(_ hint: HandheldPedFusionHint) {
+        let snap = readMotionSnapshot()
+        guard snap.carryMode == .handheld,
+              snap.integration.locomotionSurface != .treadmill
+        else { return }
+
+        var stride = max(lastStrideM, 0.28)
+        if stride < 0.42 {
+            stride = LocomotionMath.strideLengthMeters(
+                peakAccelG: 0.48,
+                weinbergK: snap.weinbergK,
+                heightCm: snap.heightCm
+            )
+        }
+        fusion.ingestHandheldPedHint(
+            strideLengthM: stride,
+            hint: hint,
+            paceKind: snap.integration.paceSessionKind
+        )
     }
 }
 
@@ -501,7 +545,12 @@ final class MotionServiceSim: MotionServiceType {
                     carryMode: s.carryMode
                 )
                 self.fusionStub.ingestMotionTick(dt: 0.5, params: params)
-                self.fusionStub.ingestWalkStepSpeed(strideLengthM: stride, stepPeriod: 0.5, paceKind: params.paceSessionKind)
+                self.fusionStub.ingestWalkStepSpeed(
+                    strideLengthM: stride,
+                    stepPeriod: 0.5,
+                    paceKind: params.paceSessionKind,
+                    carryMode: s.carryMode
+                )
                 self.fusionStub.ingestStepStride(strideLengthM: stride, params: params)
                 self.simYawRad += 0.12
                 self.fusionStub.ingestHeading(yawRadians: self.simYawRad)

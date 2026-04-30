@@ -111,6 +111,8 @@ struct SessionView: View {
 
     /// Low-pass pace (km/h) so coaching compares stable values to target.
     @State private var displaySpeedKmh: Double = 0
+    /// Extra smoothing for on-screen reading while handheld (reduces fused-speed jitter).
+    @State private var handheldLiveSpeedKmh: Double = 0
     @State private var lastCoachZone: PaceCoachZone = .idle
 
     var body: some View {
@@ -145,10 +147,14 @@ struct SessionView: View {
 
                         HStack(spacing: 28) {
                             metric("Distance", formatDistance(motion.distanceM))
-                            metric("Live speed", String(format: "%.2f km/h", motion.speedMps * 3.6))
+                            metric("Live speed", String(format: "%.2f km/h", displaySpeedKmh))
                             metric("Heading", String(format: "%.0f°", motion.headingDeg))
                         }
-                        Text("No GPS — speed updates from phone motion & steps in real time.")
+                        Text(
+                            settings.carryMode == .handheld
+                                ? "No GPS — handheld pace blends motion sensors with Apple Motion & Fitness steps (most stable while viewing the screen)."
+                                : "No GPS — speed updates from phone motion & steps in real time."
+                        )
                             .font(.caption2)
                             .foregroundStyle(.secondary)
 
@@ -259,10 +265,23 @@ struct SessionView: View {
         .onReceive(pollInterval.autoconnect()) { _ in
             steps = motion.stepCount
             let instant = motion.speedMps * 3.6
-            if displaySpeedKmh <= 0.04 && instant <= 0.04 {
-                displaySpeedKmh = instant
+
+            if settings.carryMode == .handheld {
+                if handheldLiveSpeedKmh <= 0.06 && instant <= 0.06 {
+                    handheldLiveSpeedKmh = instant
+                } else {
+                    handheldLiveSpeedKmh = handheldLiveSpeedKmh <= 0.06
+                        ? instant
+                        : (0.38 * instant + 0.62 * handheldLiveSpeedKmh)
+                }
+                displaySpeedKmh = handheldLiveSpeedKmh
             } else {
-                displaySpeedKmh = displaySpeedKmh <= 0.04 ? instant : (0.22 * instant + 0.78 * displaySpeedKmh)
+                handheldLiveSpeedKmh = instant
+                if displaySpeedKmh <= 0.04 && instant <= 0.04 {
+                    displaySpeedKmh = instant
+                } else {
+                    displaySpeedKmh = displaySpeedKmh <= 0.04 ? instant : (0.22 * instant + 0.78 * displaySpeedKmh)
+                }
             }
 
             guard isRunning, settings.paceTargetCoachingEnabled else { return }
@@ -371,6 +390,7 @@ struct SessionView: View {
         stats.reset()
         lastAlertAt = .distantPast
         displaySpeedKmh = 0
+        handheldLiveSpeedKmh = 0
         lastCoachZone = .idle
     }
 

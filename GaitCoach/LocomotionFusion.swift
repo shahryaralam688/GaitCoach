@@ -140,33 +140,63 @@ final class LocomotionFusion {
         speedMps = speedEMA
     }
 
-    /// Pace from Apple-estimated cadence × stride (handheld viewing — complements sporadic accel strikes).
-    func ingestCadenceBackedSpeed(strideLengthM: Double, cadenceSPM: Double, paceKind: PaceSessionKind) {
+    /// Handheld: prefers Apple pace / distance-derived speed; cadence × stride is fallback / tie-break.
+    func ingestHandheldPedHint(strideLengthM: Double, hint: HandheldPedFusionHint, paceKind: PaceSessionKind) {
         lock.lock()
         defer { lock.unlock() }
-        let stride = max(0.30, min(2.0, strideLengthM))
-        let minCad = paceKind == .run ? 78.0 : 36.0
-        let maxCad = paceKind == .run ? 215.0 : 178.0
-        guard cadenceSPM >= minCad, cadenceSPM <= maxCad else { return }
 
-        let stepsPerSec = cadenceSPM / 60.0
-        let maxInst = paceKind == .run ? 7.2 : 5.3
-        let instSpeed = min(maxInst, stride * stepsPerSec)
-        let cadAlpha = 0.10
-        speedEMA = speedEMA == 0 ? instSpeed : (cadAlpha * instSpeed + (1 - cadAlpha) * speedEMA)
+        let strideBase = max(0.30, min(2.0, strideLengthM))
+        let cadStrideBoost = hint.directSpeedMps == nil ? 1.085 : 1.0
+        let stride = strideBase * cadStrideBoost
+
+        var target: Double?
+
+        if let d = hint.directSpeedMps {
+            target = clampHandheldSpeedMps(d, paceKind: paceKind)
+        }
+
+        if let spm = hint.cadenceSPM {
+            let minCad = paceKind == .run ? 72.0 : 26.0
+            let maxCad = paceKind == .run ? 215.0 : 178.0
+            if spm >= minCad, spm <= maxCad {
+                let stepsPerSec = spm / 60.0
+                let maxInst = paceKind == .run ? 7.2 : 5.35
+                let fromCad = min(maxInst, stride * stepsPerSec)
+                if let t = target {
+                    target = hint.directSpeedMps != nil ? (0.58 * t + 0.42 * fromCad) : fromCad
+                } else {
+                    target = fromCad
+                }
+            }
+        }
+
+        guard let finalTarget = target else { return }
+
+        let alpha = hint.directSpeedMps != nil ? 0.24 : 0.13
+        speedEMA = speedEMA == 0 ? finalTarget : (alpha * finalTarget + (1 - alpha) * speedEMA)
         speedMps = speedEMA
+    }
+
+    private func clampHandheldSpeedMps(_ v: Double, paceKind: PaceSessionKind) -> Double {
+        switch paceKind {
+        case .walk:
+            return min(3.35, max(0.26, v))
+        case .run:
+            return min(8.8, max(0.85, v))
+        }
     }
 
     /// Update pace from time between consecutive strikes (seconds) and stride length (meters).
     /// Uses capped step period so long gaps at turns still refresh pace (shuttle / line walks).
-    func ingestWalkStepSpeed(strideLengthM: Double, stepPeriod: TimeInterval, paceKind: PaceSessionKind) {
+    func ingestWalkStepSpeed(strideLengthM: Double, stepPeriod: TimeInterval, paceKind: PaceSessionKind, carryMode: CarryMode) {
         lock.lock()
         defer { lock.unlock() }
         let minPeriod = paceKind == .run ? 0.165 : 0.22
         let maxInst = paceKind == .run ? 7.2 : 4.8
         guard stepPeriod > minPeriod, stepPeriod < 4.2, strideLengthM > 0.2 else { return }
         let instSpeed = min(maxInst, strideLengthM / stepPeriod)
-        speedEMA = speedEMA == 0 ? instSpeed : (speedAlpha * instSpeed + (1 - speedAlpha) * speedEMA)
+        let blendAlpha = carryMode == .handheld ? 0.082 : speedAlpha
+        speedEMA = speedEMA == 0 ? instSpeed : (blendAlpha * instSpeed + (1 - blendAlpha) * speedEMA)
         speedMps = speedEMA
     }
 
