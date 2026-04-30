@@ -83,6 +83,8 @@ struct SessionView: View {
     @StateObject private var motion   = MotionService()
     @StateObject private var settings = UserSettingsStore.shared
 
+    @AppStorage(AgentDebugLog.enabledKey) private var agentLogEnabled = false
+
     // Pocket side (UserDefaults)
     @AppStorage("pocketSide") private var pocketSideRaw: String = PocketSide.left.rawValue
     /// Walk vs Run selects which saved target pace applies (More → Settings).
@@ -118,6 +120,11 @@ struct SessionView: View {
     /// Low-pass pace (km/h) so coaching compares stable values to target.
     @State private var displaySpeedKmh: Double = 0
     @State private var lastCoachZone: PaceCoachZone = .idle
+    @State private var debugLogCopyFeedback: String?
+
+    private enum UiDbgThrottle {
+        static var lastEmit = Date.distantPast
+    }
 
     var body: some View {
         NavigationStack {
@@ -224,7 +231,27 @@ struct SessionView: View {
                         Spacer()
                         Text(settings.carryMode.label)
                     }
-                    #if DEBUG
+                    if agentLogEnabled {
+                    Divider()
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Mac ingest host (Wi‑Fi)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        TextField("Empty = localhost (Simulator); device: Mac IPv4", text: Binding(
+                            get: { UserDefaults.standard.string(forKey: "debugIngestHost") ?? "" },
+                            set: { UserDefaults.standard.set($0, forKey: "debugIngestHost") }
+                        ))
+                        .font(.caption.monospacedDigit())
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        Text(AgentDebugLog.resolvedIngestURLStringForUI())
+                            .font(.caption2.monospaced())
+                            .foregroundStyle(.secondary)
+                            .textSelection(.enabled)
+                        Text("Same Wi‑Fi as Mac; Cursor debug session running so POSTs fill `.cursor/debug-b248b4.log`.")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
                     Divider()
                     Text(String(
                         format: "debug — fwd: %.2f  ml: %.2f  up: %.2f",
@@ -232,7 +259,35 @@ struct SessionView: View {
                     ))
                     .font(.caption2.monospacedDigit())
                     .foregroundStyle(.secondary)
-                    #endif
+                    if let doc = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+                        let url = doc.appendingPathComponent("debug-b248b4.ndjson")
+                        if FileManager.default.fileExists(atPath: url.path) {
+                            ShareLink(item: url, preview: SharePreview("Session debug log")) {
+                                Label("Export debug log", systemImage: "square.and.arrow.up")
+                            }
+                            Button {
+                                if let data = try? Data(contentsOf: url),
+                                   let s = String(data: data, encoding: .utf8) {
+                                    UIPasteboard.general.string = s
+                                    debugLogCopyFeedback = "Copied \(s.count) characters — paste into Cursor chat."
+                                } else {
+                                    debugLogCopyFeedback = "Could not read debug file."
+                                }
+                            } label: {
+                                Label("Copy debug log to clipboard", systemImage: "doc.on.doc")
+                            }
+                            if let fb = debugLogCopyFeedback {
+                                Text(fb)
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        } else {
+                            Text("Export appears after motion updates while logging is on.")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    }
                 } header: { Text("CALIBRATION") }
 
                 // Last session card
@@ -281,6 +336,22 @@ struct SessionView: View {
                 displaySpeedKmh = instant
             } else {
                 displaySpeedKmh = displaySpeedKmh <= 0.04 ? instant : (0.22 * instant + 0.78 * displaySpeedKmh)
+            }
+
+            if agentLogEnabled {
+                let nowPoll = Date()
+                if nowPoll.timeIntervalSince(UiDbgThrottle.lastEmit) >= 10 {
+                    UiDbgThrottle.lastEmit = nowPoll
+                    AgentDebugLog.emit(
+                        hypothesisId: "H_ui",
+                        location: "SessionView.poll",
+                        message: "fusion_vs_display_kmh",
+                        data: [
+                            "fusionKmh": motion.speedMps * 3.6,
+                            "displayKmh": displaySpeedKmh,
+                        ]
+                    )
+                }
             }
 
             guard isRunning, settings.paceTargetCoachingEnabled else { return }

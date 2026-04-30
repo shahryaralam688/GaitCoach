@@ -22,6 +22,8 @@ struct CalibrationView: View {
     @StateObject private var store    = BaselineStore.shared
     @StateObject private var motion   = MotionService()
 
+    @AppStorage(AgentDebugLog.enabledKey) private var agentLogEnabled = false
+
     // Run state
     @State private var isCalibrating = false
     @State private var lastStepTime: Date?
@@ -146,10 +148,10 @@ struct CalibrationView: View {
                 Section {
                     if motion.calibrationOK {
                         metricsBlock
-                        #if DEBUG
+                        if agentLogEnabled {
                         Text(String(format: "fwd: %.2f  ml: %.2f  up: %.2f", motion.bodySample.fwd, motion.bodySample.ml, motion.bodySample.up))
                             .font(.footnote).foregroundStyle(.secondary)
-                        #endif
+                        }
                     } else {
                         VStack(alignment: .leading, spacing: 6) {
                             Text("Metrics paused—calibration quality low.")

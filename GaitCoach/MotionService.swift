@@ -128,6 +128,9 @@ final class MotionServiceDevice: MotionServiceType {
 
     private var peakGsRing: [Double] = []
 
+    /// Agent NDJSON throttle / decay sampling when `AgentDebugLog.isEnabled`.
+    private var agentDbgMotionTicks: Int = 0
+
     private var tiltEMA: Double = 0
     private let tiltAlpha = 0.02
 
@@ -223,6 +226,7 @@ final class MotionServiceDevice: MotionServiceType {
             heightCm: snap0.heightCm
         )
         peakGsRing.removeAll()
+        agentDbgMotionTicks = 0
 
         mm.deviceMotionUpdateInterval = 1.0 / 100.0
         let frame = Self.attitudeFrameForLocomotion()
@@ -234,6 +238,10 @@ final class MotionServiceDevice: MotionServiceType {
                 return
             }
             guard let dm else { return }
+
+            if AgentDebugLog.isEnabled {
+                self.agentDbgMotionTicks += 1
+            }
 
             let snap = self.readMotionSnapshot()
             let bodyT = Self.bodyTransform(from: snap.bodyTransform)
@@ -338,10 +346,30 @@ final class MotionServiceDevice: MotionServiceType {
                         }
                     }
                 }
+                let dtRawForLog = self.lastCadenceTimestamp > 0 ? now - self.lastCadenceTimestamp : -1.0
                 self.lastCadenceTimestamp = now
 
                 if let period = stepPeriodForSpeed {
                     self.fusion.ingestWalkStepSpeed(strideLengthM: stride, stepPeriod: period)
+                }
+
+                if AgentDebugLog.isEnabled {
+                    let telDbg = self.fusion.telemetrySnapshot()
+                    AgentDebugLog.emit(
+                        hypothesisId: "H_step",
+                        location: "MotionServiceDevice.motionHandler",
+                        message: "stride_speed_refresh",
+                        data: [
+                            "dtRaw": dtRawForLog,
+                            "periodUsed": stepPeriodForSpeed ?? -1,
+                            "stride": stride,
+                            "peakG": peakG,
+                            "peakMs2": peakMs2,
+                            "speedMps": telDbg.speedMps,
+                            "hadSpeedPeriod": stepPeriodForSpeed != nil,
+                            "calOK": calOK,
+                        ]
+                    )
                 }
 
                 pendingStep = PendingStepUI(
@@ -349,6 +377,22 @@ final class MotionServiceDevice: MotionServiceType {
                     medG: medG,
                     mlAtStep: ml,
                     newCadenceSPM: newCadenceSPM
+                )
+            }
+
+            if AgentDebugLog.isEnabled, peakMs2Opt == nil, self.agentDbgMotionTicks % 120 == 0 {
+                let telD = self.fusion.telemetrySnapshot()
+                let mag = sqrt(fwd * fwd + ml * ml + up * up)
+                AgentDebugLog.emit(
+                    hypothesisId: "H_decay",
+                    location: "MotionServiceDevice.motionHandler",
+                    message: "no_step_sample",
+                    data: [
+                        "speedMps": telD.speedMps,
+                        "userAccelMag": mag,
+                        "ticks": Double(self.agentDbgMotionTicks),
+                        "calOK": calOK,
+                    ]
                 )
             }
 
@@ -477,6 +521,26 @@ final class MotionServiceSim: MotionServiceType {
                 self.lastStepPeakMs2 = 3.2 + Double.random(in: -0.3...0.3)
                 self.medianRecentPeakG = 0.41
                 self.stepSubject.send((Date(), ml))
+
+                if AgentDebugLog.isEnabled {
+                    let telSim = self.fusionStub.telemetrySnapshot()
+                    AgentDebugLog.emit(
+                        hypothesisId: "H_step",
+                        location: "MotionServiceSim.timer",
+                        message: "stride_speed_refresh",
+                        data: [
+                            "source": "simulator",
+                            "dtRaw": 0.5,
+                            "periodUsed": 0.5,
+                            "stride": stride,
+                            "peakG": 0.45,
+                            "peakMs2": 4.41,
+                            "speedMps": telSim.speedMps,
+                            "hadSpeedPeriod": true,
+                            "calOK": true,
+                        ]
+                    )
+                }
             }
     }
 
