@@ -306,7 +306,9 @@ private extension Comparable {
             tags: [],
             avgStepTime: Double.random(in: 0.5...0.8),
             cvStepTime: Double.random(in: 0.04...0.14),
-            asymStepTimePct: Double.random(in: 5...15)
+            asymStepTimePct: Double.random(in: 5...15),
+            distanceM: nil,
+            avgSpeedMps: nil
         )
     }
     return GaitProgressView(

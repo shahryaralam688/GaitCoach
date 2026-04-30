@@ -43,10 +43,9 @@ struct GaitCoachApp: App {
                 
                 Group {
                     if settings.onboardingComplete {
-                        // Main 5-tab UI
                         AppTabView()
                     } else {
-                        // On
+                        OnboardingView()
                     }
                 }
             }

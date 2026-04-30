@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 import AudioToolbox
+import UIKit
 
 private let darkGreen = Color(red: 39/255, green: 77/255, blue: 67/255) // #274D43
 
@@ -84,6 +85,13 @@ struct SessionView: View {
 
     // Pocket side (UserDefaults)
     @AppStorage("pocketSide") private var pocketSideRaw: String = PocketSide.left.rawValue
+    /// Walk vs Run selects which saved target pace applies (More → Settings).
+    @AppStorage("paceSessionKind") private var paceKindRaw: String = PaceSessionKind.walk.rawValue
+
+    private var paceSessionKind: PaceSessionKind {
+        PaceSessionKind(rawValue: paceKindRaw) ?? .walk
+    }
+
     private var pocketSideLabel: String { pocketSideRaw == PocketSide.right.rawValue ? "Right" : "Left" }
 
     // run state
@@ -96,7 +104,7 @@ struct SessionView: View {
     @State private var stepC: AnyCancellable?
 
     // simple poll
-    @State private var poll: Timer?
+    private let pollInterval = Timer.publish(every: 0.25, on: .main, in: .common)
 
     // last completed session
     @State private var last: SessionSummary?
@@ -107,6 +115,10 @@ struct SessionView: View {
     private let asymWarnPct: Double = 12.0
     private let mlWarnAbs: Double = 0.10
 
+    /// Low-pass pace (km/h) so coaching compares stable values to target.
+    @State private var displaySpeedKmh: Double = 0
+    @State private var lastCoachZone: PaceCoachZone = .idle
+
     var body: some View {
         NavigationStack {
             List {
@@ -116,10 +128,55 @@ struct SessionView: View {
                         Text("Walk Session").font(.title.bold())
                         Text(isRunning ? "Running…" : "Idle").foregroundStyle(.secondary)
 
+                        Picker("Mode", selection: Binding(
+                            get: { PaceSessionKind(rawValue: paceKindRaw) ?? .walk },
+                            set: { paceKindRaw = $0.rawValue }
+                        )) {
+                            ForEach(PaceSessionKind.allCases) { kind in
+                                Text(kind.label).tag(kind)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .disabled(isRunning)
+
+                        if settings.paceTargetCoachingEnabled {
+                            let tgt = paceSessionKind.targetKmh(settings: settings)
+                            Text("Target (\(paceSessionKind.label)): \(String(format: "%.1f km/h", tgt)) ±\(Int(settings.paceTargetTolerancePct.rounded()))%")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+
                         HStack(spacing: 28) {
                             metric("Steps", "\(steps)")
                             metric("Cadence", "\(Int(motion.cadenceSPM.rounded())) spm")
                             metric("M/L sway", String(format: "%.3f g", motion.mlSwayRMS))
+                        }
+
+                        HStack(spacing: 28) {
+                            metric("Distance", formatDistance(motion.distanceM))
+                            metric("Speed", String(format: "%.2f km/h", displaySpeedKmh))
+                            metric("Heading", String(format: "%.0f°", motion.headingDeg))
+                        }
+
+                        if settings.paceTargetCoachingEnabled && isRunning {
+                            paceCoachBanner(
+                                zone: currentCoachZone(),
+                                targetKmh: paceSessionKind.targetKmh(settings: settings),
+                                actualKmh: displaySpeedKmh
+                            )
+                            .padding(.vertical, 6)
+                        }
+
+                        if settings.locomotionSurface != .treadmill {
+                            PlanarTraceMiniMap(points: motion.trackPlanarPoints)
+                                .opacity(isRunning || motion.trackPlanarPoints.count > 1 ? 1 : 0.35)
+                            Text("2D trace is step-based dead reckoning with compass yaw — approximate indoors; curved paths won’t close like GPS.")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        } else {
+                            Text("2D floor trace is disabled on treadmill sessions.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
 
                         VStack(alignment: .leading, spacing: 4) {
@@ -159,6 +216,11 @@ struct SessionView: View {
                             Text(q.isGood ? "✅ Good" : "⚠️ Low").fontWeight(.semibold)
                         } else { Text("—") }
                     }
+                    HStack {
+                        Text("Carry mode").foregroundStyle(.secondary)
+                        Spacer()
+                        Text(settings.carryMode.label)
+                    }
                     #if DEBUG
                     Divider()
                     Text(String(
@@ -182,6 +244,10 @@ struct SessionView: View {
                                 Spacer()
                                 Text(String(format: "Cadence: %.0f spm", s.cadenceSPM))
                                 Spacer()
+                                if let d = s.distanceM {
+                                    Text(String(format: "%.2f km", d / 1000))
+                                    Spacer()
+                                }
                                 Text(String(format: "M/L sway: %.3f g", s.mlSwayRMS))
                             }
                             .font(.footnote)
@@ -204,16 +270,37 @@ struct SessionView: View {
                 stats.ingest(time: time, ml: ml)
                 checkDeviation()
             }
-            // light polling for step count display
-            poll?.invalidate()
-            poll = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { _ in
-                steps = motion.stepCount
+        }
+        .onReceive(pollInterval.autoconnect()) { _ in
+            steps = motion.stepCount
+            let instant = motion.speedMps * 3.6
+            if displaySpeedKmh <= 0.04 && instant <= 0.04 {
+                displaySpeedKmh = instant
+            } else {
+                displaySpeedKmh = displaySpeedKmh <= 0.04 ? instant : (0.22 * instant + 0.78 * displaySpeedKmh)
+            }
+
+            guard isRunning, settings.paceTargetCoachingEnabled else { return }
+
+            let kind = PaceSessionKind(rawValue: paceKindRaw) ?? .walk
+            let target = kind.targetKmh(settings: settings)
+            let frac = PaceCoach.toleranceFraction(fromPercent: settings.paceTargetTolerancePct)
+            let z = PaceCoach.zone(
+                actualKmh: displaySpeedKmh,
+                cadenceSPM: motion.cadenceSPM,
+                targetKmh: target,
+                toleranceFraction: frac
+            )
+            if z != lastCoachZone {
+                if settings.hapticCueingEnabled && (z == .slow || z == .fast) {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+                lastCoachZone = z
             }
         }
         .onDisappear {
             motion.stop()
             stepC?.cancel(); stepC = nil
-            poll?.invalidate(); poll = nil
         }
     }
 
@@ -221,6 +308,65 @@ struct SessionView: View {
 
     private func metric(_ title: String, _ value: String) -> some View {
         VStack { Text(title).font(.caption); Text(value).font(.title3.monospacedDigit()) }
+    }
+
+    private func currentCoachZone() -> PaceCoachZone {
+        let target = paceSessionKind.targetKmh(settings: settings)
+        let frac = PaceCoach.toleranceFraction(fromPercent: settings.paceTargetTolerancePct)
+        return PaceCoach.zone(
+            actualKmh: displaySpeedKmh,
+            cadenceSPM: motion.cadenceSPM,
+            targetKmh: target,
+            toleranceFraction: frac
+        )
+    }
+
+    @ViewBuilder
+    private func paceCoachBanner(zone: PaceCoachZone, targetKmh: Double, actualKmh: Double) -> some View {
+        let tgt = String(format: "%.1f", targetKmh)
+        let act = String(format: "%.1f", actualKmh)
+        switch zone {
+        case .idle:
+            Text("Move steadily — coaching compares your pace to \(tgt) km/h.")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(12)
+                .background(Color.gray.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+
+        case .onTarget:
+            Label("On target (\(act) vs \(tgt) km/h)", systemImage: "checkmark.circle.fill")
+                .font(.callout.weight(.semibold))
+                .foregroundStyle(Color(red: 0.12, green: 0.52, blue: 0.28))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(12)
+                .background(Color.green.opacity(0.14))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+
+        case .slow:
+            Label("Below target — speed up (\(act) vs \(tgt) km/h)", systemImage: "hare.fill")
+                .font(.callout.weight(.semibold))
+                .foregroundStyle(.orange)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(12)
+                .background(Color.orange.opacity(0.14))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+
+        case .fast:
+            Label("Above target — ease off (\(act) vs \(tgt) km/h)", systemImage: "tortoise.fill")
+                .font(.callout.weight(.semibold))
+                .foregroundStyle(.blue)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(12)
+                .background(Color.blue.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+    }
+
+    private func formatDistance(_ m: Double) -> String {
+        if m >= 1000 { return String(format: "%.2f km", m / 1000) }
+        return String(format: "%.1f m", m)
     }
 
     private func colorForAsym(_ p: Double) -> Color {
@@ -240,6 +386,8 @@ struct SessionView: View {
         steps = 0
         stats.reset()
         lastAlertAt = .distantPast
+        displaySpeedKmh = 0
+        lastCoachZone = .idle
     }
 
     private func stop() {
@@ -276,7 +424,9 @@ struct SessionView: View {
             tags: tags,                   // store machine tags
             avgStepTime: stats.avgStepTime,
             cvStepTime: stats.stepTimeCV,
-            asymStepTimePct: stats.asymPct
+            asymStepTimePct: stats.asymPct,
+            distanceM: motion.distanceM,
+            avgSpeedMps: motion.speedMps
         )
         SessionSummaryStore.shared.add(s)
         last = s

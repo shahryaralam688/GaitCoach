@@ -30,11 +30,10 @@ struct AppTabView: View {
             stack { MoreView() }
                 .tabItem { Label("More", systemImage: "ellipsis.circle") }
                 .tag(AppTab.more)
-            
-            .fullScreenCover(isPresented: $showOnboarding) {
-                OnboardingGate()
+        }
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingGate()
                 .interactiveDismissDisabled(!didOnboard)
-                }
         }
         .tint(GCTheme.onHeader)
         .onAppear {

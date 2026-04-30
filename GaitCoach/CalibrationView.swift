@@ -44,6 +44,11 @@ struct CalibrationView: View {
     @State private var outcome: ScreenOutcome = .insufficient
     @State private var showSaved = false
 
+    @State private var strideCalibMeters: String = ""
+    @State private var strideCalibFeedback: String = ""
+
+    @State private var headingCalibFeedback: String = ""
+
     // Pocket orientation state
     @AppStorage("pocketSide") private var pocketSideRaw: String = PocketSide.left.rawValue
     private var pocketSide: PocketSide { PocketSide(rawValue: pocketSideRaw) ?? .left }
@@ -76,6 +81,67 @@ struct CalibrationView: View {
                     }
                 } header: { SectionHeader("CALIBRATION") }
 
+                Section {
+                    TextField("Measured distance (m)", text: $strideCalibMeters)
+                        .keyboardType(.decimalPad)
+                    Text("Steps this calibration run: \(stepsSeen)")
+                        .font(.footnote).foregroundStyle(.secondary)
+                    Text(String(format: "Median peak (recent steps): %.3f g", motion.medianRecentPeakG))
+                        .font(.footnote).foregroundStyle(.secondary)
+
+                    Button("Apply Weinberg K") {
+                        applyStrideCalibration()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(darkGreen)
+                    .disabled(stepsSeen < 12 || strideCalibMeters.trimmingCharacters(in: .whitespaces).isEmpty)
+
+                    if !strideCalibFeedback.isEmpty {
+                        Text(strideCalibFeedback)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                } header: {
+                    SectionHeader("STRIDE LENGTH (KNOWN DISTANCE)")
+                } footer: {
+                    Text("Walk the measured distance during **Start Calibration**, then tap Apply. Uses median peak acceleration from recent steps.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+
+                Section {
+                    Text("Hold the phone exactly as during walking and point the **top edge** toward where your feet will move forward.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+
+                    Button("Set forward heading") {
+                        let yawRad = motion.headingDeg * .pi / 180
+                        settings.walkingHeadingOffsetRad = -yawRad
+                        headingCalibFeedback = "Saved. The 2D trace now treats “forward” along your current facing."
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(darkGreen)
+
+                    Button("Clear heading offset") {
+                        settings.walkingHeadingOffsetRad = 0
+                        headingCalibFeedback = "Offset cleared — raw compass yaw is used (often biased indoors)."
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(darkGreen)
+
+                    if !headingCalibFeedback.isEmpty {
+                        Text(headingCalibFeedback)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                } header: {
+                    SectionHeader("2D TRACK — FORWARD")
+                } footer: {
+                    Text("Uses magnetometer-aided yaw; nearby metal skews headings. Recalibrate if you change how you hold the phone.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+
                 // Live metrics
                 Section {
                     if motion.calibrationOK {
@@ -96,6 +162,13 @@ struct CalibrationView: View {
                 // Pocket orientation
                 Section {
                     VStack(alignment: .leading, spacing: 10) {
+                        Picker("Carry mode", selection: $settings.carryMode) {
+                            ForEach(CarryMode.allCases) { mode in
+                                Text(mode.label).tag(mode)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+
                         Picker("Pocket", selection: $pocketSideRaw) {
                             Text("Left").tag(PocketSide.left.rawValue)
                             Text("Right").tag(PocketSide.right.rawValue)
@@ -104,7 +177,8 @@ struct CalibrationView: View {
                         
                         HStack {
                             Button("Calibrate Pocket Orientation") {
-                                let cal = OrientationCalibrator(side: pocketSide, hz: 100, seconds: 10)
+                                let sec = settings.carryMode.calibrationWalkSeconds
+                                let cal = OrientationCalibrator(side: pocketSide, hz: 100, seconds: sec)
                                 cal.start { transform, quality in
                                     orientQuality = quality
                                     if let t = transform, quality.isGood {
@@ -400,6 +474,7 @@ struct CalibrationView: View {
         leftIntervals.removeAll()
         rightIntervals.removeAll()
         swaySamples.removeAll()
+        strideCalibFeedback = ""
     }
 
     // MARK: - Step handling with ML sign (left/right)
@@ -506,6 +581,33 @@ struct CalibrationView: View {
             mlSwayRMS: ml,
             asymStepTimePct: sta
         ))
+    }
+
+    private func applyStrideCalibration() {
+        strideCalibFeedback = ""
+        let raw = strideCalibMeters.replacingOccurrences(of: ",", with: ".").trimmingCharacters(in: .whitespaces)
+        guard let dist = Double(raw), dist >= 3 else {
+            strideCalibFeedback = "Enter distance ≥ 3 m."
+            return
+        }
+        guard stepsSeen >= 12 else {
+            strideCalibFeedback = "Need at least 12 steps during calibration."
+            return
+        }
+        guard motion.medianRecentPeakG > 0.06 else {
+            strideCalibFeedback = "Median peak too low — walk with motion running."
+            return
+        }
+        guard let K = LocomotionMath.estimateWeinbergK(
+            knownDistanceM: dist,
+            steps: stepsSeen,
+            medianPeakG: motion.medianRecentPeakG
+        ) else {
+            strideCalibFeedback = "Could not estimate K."
+            return
+        }
+        settings.weinbergK = K
+        strideCalibFeedback = String(format: "Saved Weinberg K ≈ %.4f", K)
     }
 }
 

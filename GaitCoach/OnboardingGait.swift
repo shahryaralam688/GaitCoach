@@ -1,5 +1,7 @@
 import SwiftUI
 
+private let onboardingGateAccent = Color(red: 39/255, green: 77/255, blue: 67/255)
+
 struct OnboardingGate: View {
     @AppStorage("didOnboard") private var didOnboard = false
 
@@ -13,10 +15,20 @@ struct OnboardingGate: View {
                         text: "We read steps & motion to coach you.")
         }
         .tabViewStyle(.page)
+        .indexViewStyle(.page(backgroundDisplayMode: .always))
         .overlay(alignment: .bottom) {
-            Button("Get started") { didOnboard = true }
-                .buttonStyle(.borderedProminent)
-                .padding()
+            Button {
+                didOnboard = true
+            } label: {
+                Text("Get started")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(onboardingGateAccent)
+            .padding(.horizontal, 24)
+            .padding(.bottom, 8)
         }
     }
 }

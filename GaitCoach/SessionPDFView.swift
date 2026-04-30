@@ -22,6 +22,12 @@ struct SessionPDFView: View {
                 gridRow("Date", longDate(session.date))
                 gridRow("Steps", "\(session.steps)")
                 gridRow("Cadence", String(format: "%.0f spm", session.cadenceSPM))
+                if let d = session.distanceM {
+                    gridRow("Distance", String(format: "%.2f km", d / 1000))
+                }
+                if let v = session.avgSpeedMps {
+                    gridRow("Avg speed", String(format: "%.2f km/h", v * 3.6))
+                }
                 gridRow("M/L sway (RMS)", String(format: "%.3f g", session.mlSwayRMS))
                 gridRow("Symmetry score", "\(session.symmetryScore)/100")
             }
@@ -107,7 +113,9 @@ struct SessionPDFView: View {
                "M/L sway ↑ vs your baseline (~24%)"],
         avgStepTime: 0.56,
         cvStepTime: 0.09,
-        asymStepTimePct: 0.0
+        asymStepTimePct: 0.0,
+        distanceM: 980,
+        avgSpeedMps: 1.25
     )
 
     let demoBaseline = Baseline(

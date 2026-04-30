@@ -3,12 +3,14 @@ import SwiftUI
 
 enum DiagnosticsExporter {
     static func csv(for sessions: [SessionSummary]) -> String {
-        var out = "date,steps,cadenceSPM,mlSwayRMS,avgStepTime,cvStepTime,asymStepTimePct,tags\n"
+        var out = "date,steps,cadenceSPM,mlSwayRMS,avgStepTime,cvStepTime,asymStepTimePct,distanceM,avgSpeedMps,tags\n"
         let df = ISO8601DateFormatter()
         for s in sessions {
             let date = df.string(from: s.date)
             let tags = s.tags.joined(separator: "|")
-            out += "\(date),\(s.steps),\(s.cadenceSPM),\(s.mlSwayRMS),\(s.avgStepTime),\(s.cvStepTime),\(s.asymStepTimePct),\(tags)\n"
+            let dist = s.distanceM.map { String(format: "%.2f", $0) } ?? ""
+            let spd = s.avgSpeedMps.map { String(format: "%.4f", $0) } ?? ""
+            out += "\(date),\(s.steps),\(s.cadenceSPM),\(s.mlSwayRMS),\(s.avgStepTime),\(s.cvStepTime),\(s.asymStepTimePct),\(dist),\(spd),\(tags)\n"
         }
         return out
     }

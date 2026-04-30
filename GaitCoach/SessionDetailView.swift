@@ -18,6 +18,12 @@ struct SessionDetailView: View {
                     row("Steps", "\(session.steps)")
                     row("Cadence", String(format: "%.0f spm", session.cadenceSPM))
                     row("Symmetry score", "\(session.symmetryScore)/100")
+                    if let d = session.distanceM {
+                        row("Distance", String(format: "%.2f km", d / 1000))
+                    }
+                    if let v = session.avgSpeedMps {
+                        row("Avg speed", String(format: "%.2f km/h", v * 3.6))
+                    }
                 }
 
                 group("Timing") {

@@ -14,6 +14,38 @@ struct SessionSummary: Identifiable, Codable {
     let avgStepTime: Double
     let cvStepTime: Double
     let asymStepTimePct: Double
+    /// Session locomotion distance (IMU fusion); nil for passive summaries.
+    let distanceM: Double?
+    /// Mean speed during session (m/s); nil when unavailable.
+    let avgSpeedMps: Double?
+
+    init(
+        id: UUID,
+        date: Date,
+        steps: Int,
+        cadenceSPM: Double,
+        mlSwayRMS: Double,
+        symmetryScore: Int,
+        tags: [String],
+        avgStepTime: Double,
+        cvStepTime: Double,
+        asymStepTimePct: Double,
+        distanceM: Double? = nil,
+        avgSpeedMps: Double? = nil
+    ) {
+        self.id = id
+        self.date = date
+        self.steps = steps
+        self.cadenceSPM = cadenceSPM
+        self.mlSwayRMS = mlSwayRMS
+        self.symmetryScore = symmetryScore
+        self.tags = tags
+        self.avgStepTime = avgStepTime
+        self.cvStepTime = cvStepTime
+        self.asymStepTimePct = asymStepTimePct
+        self.distanceM = distanceM
+        self.avgSpeedMps = avgSpeedMps
+    }
 }
 
 // MARK: - Store
@@ -108,7 +140,9 @@ extension SessionSummaryStore {
                 tags: newTags,
                 avgStepTime: avgStep,
                 cvStepTime: cvStep,
-                asymStepTimePct: asymVal
+                asymStepTimePct: asymVal,
+                distanceM: existing.distanceM,
+                avgSpeedMps: existing.avgSpeedMps
             )
             sessions[i] = updated
         } else {
@@ -122,7 +156,9 @@ extension SessionSummaryStore {
                 tags: ["passive"],
                 avgStepTime: avgStep,
                 cvStepTime: cvStep,
-                asymStepTimePct: asymVal
+                asymStepTimePct: asymVal,
+                distanceM: nil,
+                avgSpeedMps: nil
             )
             sessions.append(new)
         }

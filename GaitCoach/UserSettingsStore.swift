@@ -62,6 +62,19 @@ final class UserSettingsStore: ObservableObject {
     private let orientTxKey    = "UserSettings.orientTransform.v1"
     private let orientQKey     = "UserSettings.orientQuality.v1"
 
+    // Locomotion / stride calibration (no GPS)
+    private let carryModeKey                  = "UserSettings.carryMode.v1"
+    private let weinbergKKey                  = "UserSettings.weinbergK.v1"
+    private let locomotionSurfaceKey          = "UserSettings.locomotionSurface.v1"
+    private let treadmillBeltKmhKey           = "UserSettings.treadmillBeltKmh.v1"
+    private let treadmillDistanceUsesBeltKey   = "UserSettings.treadmillBeltDist.v1"
+
+    private let paceTargetOnKey               = "UserSettings.paceTargetOn.v1"
+    private let paceWalkKmhKey                = "UserSettings.paceWalkKmh.v1"
+    private let paceRunKmhKey                 = "UserSettings.paceRunKmh.v1"
+    private let paceTolPctKey                 = "UserSettings.paceTolPct.v1"
+    private let walkingHeadingOffsetKey       = "UserSettings.walkHeadingOffsetRad.v1"
+
     // Settings
     @Published var ageGroup: AgeGroup                 { didSet { save() } }
     @Published var prosthesisSide: ProsthesisSide     { didSet { save() } }
@@ -80,9 +93,33 @@ final class UserSettingsStore: ObservableObject {
     @Published var bodyTransform: OrientationTransformDTO?        { didSet { save() } }
     @Published var orientationQuality: OrientationQualityDTO?     { didSet { save() } }
 
+    /// Carry mode for calibration duration + step-detector tuning.
+    @Published var carryMode: CarryMode                           { didSet { save() } }
+    /// Weinberg stride constant \(K\) from known-distance calibration; `nil` uses height fallback only.
+    @Published var weinbergK: Double?                           { didSet { save() } }
+    /// Ground vs treadmill integration rules.
+    @Published var locomotionSurface: LocomotionSurface           { didSet { save() } }
+    /// Display / belt-distance treadmill speed (km/h).
+    @Published var treadmillBeltSpeedKmh: Double                { didSet { save() } }
+    /// When `locomotionSurface == .treadmill`, integrate distance from belt speed × Δt instead of steps × stride.
+    @Published var treadmillDistanceUsesBeltSpeed: Bool          { didSet { save() } }
+
+    /// Live pace coaching vs walk/run targets (IMU-derived pace — calibrate stride for better accuracy).
+    @Published var paceTargetCoachingEnabled: Bool               { didSet { save() } }
+    /// Goal pace when session mode is Walk (km/h).
+    @Published var paceTargetWalkKmh: Double                       { didSet { save() } }
+    /// Goal pace when session mode is Run (km/h).
+    @Published var paceTargetRunKmh: Double                       { didSet { save() } }
+    /// Percent band around target counted as “on target” (e.g. 12 → ±12%).
+    @Published var paceTargetTolerancePct: Double                { didSet { save() } }
+
+    /// Added to Core Motion yaw (rad) for planar DR after **Set forward** (typically `-yawAtCalibration`).
+    @Published var walkingHeadingOffsetRad: Double               { didSet { save() } }
+
     // MARK: Init / load
 
     private init() {
+        defer { bootstrapDefaultsIfNeeded() }
         let d = UserDefaults.standard
 
         if let raw = d.string(forKey: ageKey), let v = AgeGroup(rawValue: raw) {
@@ -126,7 +163,45 @@ final class UserSettingsStore: ObservableObject {
             orientationQuality = nil
         }
 
-        bootstrapDefaultsIfNeeded()
+        if let raw = d.string(forKey: carryModeKey), let v = CarryMode(rawValue: raw) {
+            carryMode = v
+        } else {
+            carryMode = .handheld
+        }
+
+        if d.object(forKey: weinbergKKey) != nil {
+            let x = d.double(forKey: weinbergKKey)
+            weinbergK = x > 0 ? x : nil
+        } else {
+            weinbergK = nil
+        }
+
+        if let raw = d.string(forKey: locomotionSurfaceKey), let v = LocomotionSurface(rawValue: raw) {
+            locomotionSurface = v
+        } else {
+            locomotionSurface = .ground
+        }
+
+        let beltKmh = d.double(forKey: treadmillBeltKmhKey)
+        treadmillBeltSpeedKmh = beltKmh > 0 ? beltKmh : 5.0
+
+        treadmillDistanceUsesBeltSpeed = d.object(forKey: treadmillDistanceUsesBeltKey) as? Bool ?? false
+
+        paceTargetCoachingEnabled = d.object(forKey: paceTargetOnKey) as? Bool ?? false
+
+        let wKmh = d.double(forKey: paceWalkKmhKey)
+        paceTargetWalkKmh = (wKmh >= 2 && wKmh <= 12) ? wKmh : 5.0
+
+        let rKmh = d.double(forKey: paceRunKmhKey)
+        paceTargetRunKmh = (rKmh >= 5 && rKmh <= 26) ? rKmh : 10.0
+
+        let tol = d.double(forKey: paceTolPctKey)
+        paceTargetTolerancePct = (tol >= 5 && tol <= 30) ? tol : 12.0
+
+        walkingHeadingOffsetRad = d.object(forKey: walkingHeadingOffsetKey) != nil
+            ? d.double(forKey: walkingHeadingOffsetKey)
+            : 0
+
     }
 
     // MARK: Save
@@ -156,6 +231,22 @@ final class UserSettingsStore: ObservableObject {
         } else {
             d.removeObject(forKey: orientQKey)
         }
+
+        d.set(carryMode.rawValue, forKey: carryModeKey)
+        if let k = weinbergK, k > 0 {
+            d.set(k, forKey: weinbergKKey)
+        } else {
+            d.removeObject(forKey: weinbergKKey)
+        }
+        d.set(locomotionSurface.rawValue, forKey: locomotionSurfaceKey)
+        d.set(treadmillBeltSpeedKmh, forKey: treadmillBeltKmhKey)
+        d.set(treadmillDistanceUsesBeltSpeed, forKey: treadmillDistanceUsesBeltKey)
+
+        d.set(paceTargetCoachingEnabled, forKey: paceTargetOnKey)
+        d.set(paceTargetWalkKmh, forKey: paceWalkKmhKey)
+        d.set(paceTargetRunKmh, forKey: paceRunKmhKey)
+        d.set(paceTargetTolerancePct, forKey: paceTolPctKey)
+        d.set(walkingHeadingOffsetRad, forKey: walkingHeadingOffsetKey)
     }
 
     // MARK: - Convenience
@@ -192,6 +283,9 @@ final class UserSettingsStore: ObservableObject {
         onboardingComplete = false
         bootstrapDefaultsIfNeeded()
     }
+
+    /// Belt speed in m/s for integration and display helpers.
+    var treadmillBeltSpeedMps: Double { max(0, treadmillBeltSpeedKmh) / 3.6 }
 }
 
 // MARK: - Defaults
