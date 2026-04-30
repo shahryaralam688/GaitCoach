@@ -5,6 +5,8 @@ struct LocomotionIntegrationParams: Sendable {
     var locomotionSurface: LocomotionSurface
     var treadmillUsesBeltSpeed: Bool
     var treadmillBeltMps: Double
+    /// Walk vs Run session mode — affects step pacing gates and decay (motion layer reads from settings).
+    var paceSessionKind: PaceSessionKind = .walk
 }
 
 /// Pure math helpers (testable without device motion).
@@ -123,8 +125,8 @@ final class LocomotionFusion {
             return
         }
 
-        // Slower decay so shuttle / turn-around gaps don’t zero speed between real steps (~100 Hz ticks).
-        let tau = 1.45
+        // Run cadence is higher — avoid bleeding pace to zero between strikes when ticks miss occasionally.
+        let tau = params.paceSessionKind == .run ? 2.05 : 1.45
         speedEMA *= exp(-dt / tau)
         if speedEMA < 0.035 { speedEMA = 0 }
         speedMps = speedEMA
@@ -132,11 +134,13 @@ final class LocomotionFusion {
 
     /// Update pace from time between consecutive strikes (seconds) and stride length (meters).
     /// Uses capped step period so long gaps at turns still refresh pace (shuttle / line walks).
-    func ingestWalkStepSpeed(strideLengthM: Double, stepPeriod: TimeInterval) {
+    func ingestWalkStepSpeed(strideLengthM: Double, stepPeriod: TimeInterval, paceKind: PaceSessionKind) {
         lock.lock()
         defer { lock.unlock() }
-        guard stepPeriod > 0.22, stepPeriod < 4.2, strideLengthM > 0.2 else { return }
-        let instSpeed = min(4.8, strideLengthM / stepPeriod)
+        let minPeriod = paceKind == .run ? 0.165 : 0.22
+        let maxInst = paceKind == .run ? 7.2 : 4.8
+        guard stepPeriod > minPeriod, stepPeriod < 4.2, strideLengthM > 0.2 else { return }
+        let instSpeed = min(maxInst, strideLengthM / stepPeriod)
         speedEMA = speedEMA == 0 ? instSpeed : (speedAlpha * instSpeed + (1 - speedAlpha) * speedEMA)
         speedMps = speedEMA
     }

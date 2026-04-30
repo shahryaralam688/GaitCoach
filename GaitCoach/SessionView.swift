@@ -85,12 +85,6 @@ struct SessionView: View {
 
     // Pocket side (UserDefaults)
     @AppStorage("pocketSide") private var pocketSideRaw: String = PocketSide.left.rawValue
-    /// Walk vs Run selects which saved target pace applies (More → Settings).
-    @AppStorage("paceSessionKind") private var paceKindRaw: String = PaceSessionKind.walk.rawValue
-
-    private var paceSessionKind: PaceSessionKind {
-        PaceSessionKind(rawValue: paceKindRaw) ?? .walk
-    }
 
     private var pocketSideLabel: String { pocketSideRaw == PocketSide.right.rawValue ? "Right" : "Left" }
 
@@ -128,10 +122,7 @@ struct SessionView: View {
                         Text("Walk Session").font(.title.bold())
                         Text(isRunning ? "Running…" : "Idle").foregroundStyle(.secondary)
 
-                        Picker("Mode", selection: Binding(
-                            get: { PaceSessionKind(rawValue: paceKindRaw) ?? .walk },
-                            set: { paceKindRaw = $0.rawValue }
-                        )) {
+                        Picker("Mode", selection: $settings.paceSessionKind) {
                             ForEach(PaceSessionKind.allCases) { kind in
                                 Text(kind.label).tag(kind)
                             }
@@ -140,8 +131,8 @@ struct SessionView: View {
                         .disabled(isRunning)
 
                         if settings.paceTargetCoachingEnabled {
-                            let tgt = paceSessionKind.targetKmh(settings: settings)
-                            Text("Target (\(paceSessionKind.label)): \(String(format: "%.1f km/h", tgt)) ±\(Int(settings.paceTargetTolerancePct.rounded()))%")
+                            let tgt = settings.paceSessionKind.targetKmh(settings: settings)
+                            Text("Target (\(settings.paceSessionKind.label)): \(String(format: "%.1f km/h", tgt)) ±\(Int(settings.paceTargetTolerancePct.rounded()))%")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
@@ -164,7 +155,7 @@ struct SessionView: View {
                         if settings.paceTargetCoachingEnabled && isRunning {
                             paceCoachBanner(
                                 zone: currentCoachZone(),
-                                targetKmh: paceSessionKind.targetKmh(settings: settings),
+                                targetKmh: settings.paceSessionKind.targetKmh(settings: settings),
                                 actualKmh: displaySpeedKmh
                             )
                             .padding(.vertical, 6)
@@ -276,8 +267,7 @@ struct SessionView: View {
 
             guard isRunning, settings.paceTargetCoachingEnabled else { return }
 
-            let kind = PaceSessionKind(rawValue: paceKindRaw) ?? .walk
-            let target = kind.targetKmh(settings: settings)
+            let target = settings.paceSessionKind.targetKmh(settings: settings)
             let frac = PaceCoach.toleranceFraction(fromPercent: settings.paceTargetTolerancePct)
             let z = PaceCoach.zone(
                 actualKmh: displaySpeedKmh,
@@ -305,7 +295,7 @@ struct SessionView: View {
     }
 
     private func currentCoachZone() -> PaceCoachZone {
-        let target = paceSessionKind.targetKmh(settings: settings)
+        let target = settings.paceSessionKind.targetKmh(settings: settings)
         let frac = PaceCoach.toleranceFraction(fromPercent: settings.paceTargetTolerancePct)
         return PaceCoach.zone(
             actualKmh: displaySpeedKmh,

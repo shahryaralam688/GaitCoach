@@ -74,6 +74,8 @@ final class UserSettingsStore: ObservableObject {
     private let paceRunKmhKey                 = "UserSettings.paceRunKmh.v1"
     private let paceTolPctKey                 = "UserSettings.paceTolPct.v1"
     private let walkingHeadingOffsetKey       = "UserSettings.walkHeadingOffsetRad.v1"
+    /// Matches Session UI segmented control (`AppStorage` key) so motion layer sees Walk vs Run.
+    private let paceSessionKindDefaultsKey    = "paceSessionKind"
 
     // Settings
     @Published var ageGroup: AgeGroup                 { didSet { save() } }
@@ -112,6 +114,9 @@ final class UserSettingsStore: ObservableObject {
     @Published var paceTargetRunKmh: Double                       { didSet { save() } }
     /// Percent band around target counted as “on target” (e.g. 12 → ±12%).
     @Published var paceTargetTolerancePct: Double                { didSet { save() } }
+
+    /// Session mode on Walk tab — drives coaching targets and motion fusion gates for Run cadence.
+    @Published var paceSessionKind: PaceSessionKind               { didSet { save() } }
 
     /// Added to Core Motion yaw (rad) for planar DR after **Set forward** (typically `-yawAtCalibration`).
     @Published var walkingHeadingOffsetRad: Double               { didSet { save() } }
@@ -202,6 +207,12 @@ final class UserSettingsStore: ObservableObject {
             ? d.double(forKey: walkingHeadingOffsetKey)
             : 0
 
+        if let raw = d.string(forKey: paceSessionKindDefaultsKey), let pk = PaceSessionKind(rawValue: raw) {
+            paceSessionKind = pk
+        } else {
+            paceSessionKind = .walk
+        }
+
     }
 
     // MARK: Save
@@ -247,6 +258,7 @@ final class UserSettingsStore: ObservableObject {
         d.set(paceTargetRunKmh, forKey: paceRunKmhKey)
         d.set(paceTargetTolerancePct, forKey: paceTolPctKey)
         d.set(walkingHeadingOffsetRad, forKey: walkingHeadingOffsetKey)
+        d.set(paceSessionKind.rawValue, forKey: paceSessionKindDefaultsKey)
     }
 
     // MARK: - Convenience

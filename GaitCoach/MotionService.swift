@@ -150,7 +150,8 @@ final class MotionServiceDevice: MotionServiceType {
             integration: LocomotionIntegrationParams(
                 locomotionSurface: s.locomotionSurface,
                 treadmillUsesBeltSpeed: s.treadmillDistanceUsesBeltSpeed,
-                treadmillBeltMps: s.treadmillBeltSpeedMps
+                treadmillBeltMps: s.treadmillBeltSpeedMps,
+                paceSessionKind: s.paceSessionKind
             ),
             bodyTransform: s.bodyTransform,
             orientationQualityGood: s.orientationQuality?.isGood ?? false,
@@ -282,6 +283,9 @@ final class MotionServiceDevice: MotionServiceType {
             let cadUse = self.cadenceForFusion
             self.cadenceLock.unlock()
 
+            let paceKind = snap.integration.paceSessionKind
+            let cadenceHintFloor = paceKind == .run ? 138.0 : 72.0
+
             if let prev = self.lastMotionTimestamp {
                 let dt = now - prev
                 self.fusion.ingestMotionTick(dt: dt, params: snap.integration)
@@ -296,7 +300,7 @@ final class MotionServiceDevice: MotionServiceType {
                 gyro: gyro,
                 carryMode: snap.carryMode,
                 calibrationOK: calOK,
-                cadenceHintSPM: max(cadUse, 72)
+                cadenceHintSPM: max(cadUse, cadenceHintFloor)
             )
 
             var pendingStep: PendingStepUI?
@@ -329,9 +333,11 @@ final class MotionServiceDevice: MotionServiceType {
                 var stepPeriodForSpeed: TimeInterval?
                 if self.lastCadenceTimestamp > 0 {
                     let dtStep = now - self.lastCadenceTimestamp
+                    let minDt = paceKind == .run ? 0.16 : 0.22
+                    let periodLow = paceKind == .run ? 0.22 : 0.28
                     // Shuttle / turn: gaps may exceed 2 s — still refresh speed; cadence UI only when rhythm is plausible.
-                    if dtStep > 0.22 && dtStep < 6.5 {
-                        let periodSpeed = min(max(dtStep, 0.28), 3.5)
+                    if dtStep > minDt && dtStep < 6.5 {
+                        let periodSpeed = min(max(dtStep, periodLow), 3.5)
                         stepPeriodForSpeed = periodSpeed
                         if dtStep <= 2.8 {
                             newCadenceSPM = min(200, max(0, 60.0 / dtStep))
@@ -341,7 +347,7 @@ final class MotionServiceDevice: MotionServiceType {
                 self.lastCadenceTimestamp = now
 
                 if let period = stepPeriodForSpeed {
-                    self.fusion.ingestWalkStepSpeed(strideLengthM: stride, stepPeriod: period)
+                    self.fusion.ingestWalkStepSpeed(strideLengthM: stride, stepPeriod: period, paceKind: paceKind)
                 }
 
                 pendingStep = PendingStepUI(
@@ -454,10 +460,11 @@ final class MotionServiceSim: MotionServiceType {
                 let params = LocomotionIntegrationParams(
                     locomotionSurface: s.locomotionSurface,
                     treadmillUsesBeltSpeed: s.treadmillDistanceUsesBeltSpeed,
-                    treadmillBeltMps: s.treadmillBeltSpeedMps
+                    treadmillBeltMps: s.treadmillBeltSpeedMps,
+                    paceSessionKind: s.paceSessionKind
                 )
                 self.fusionStub.ingestMotionTick(dt: 0.5, params: params)
-                self.fusionStub.ingestWalkStepSpeed(strideLengthM: stride, stepPeriod: 0.5)
+                self.fusionStub.ingestWalkStepSpeed(strideLengthM: stride, stepPeriod: 0.5, paceKind: params.paceSessionKind)
                 self.fusionStub.ingestStepStride(strideLengthM: stride, params: params)
                 self.simYawRad += 0.12
                 self.fusionStub.ingestHeading(yawRadians: self.simYawRad)
