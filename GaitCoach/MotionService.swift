@@ -61,7 +61,9 @@ private struct MotionProcessingSnapshot {
     var integration: LocomotionIntegrationParams = .init(
         locomotionSurface: .ground,
         treadmillUsesBeltSpeed: false,
-        treadmillBeltMps: 0
+        treadmillBeltMps: 0,
+        paceSessionKind: .walk,
+        carryMode: .handheld
     )
     var bodyTransform: OrientationTransformDTO?
     var orientationQualityGood: Bool = false
@@ -108,6 +110,7 @@ final class MotionServiceDevice: MotionServiceType {
     private let settings = UserSettingsStore.shared
     private let stepDetector = HandheldStepDetector()
     private let fusion = LocomotionFusion()
+    private let pedCadence = PedometerCadenceMonitor()
 
     private let snapshotLock = NSLock()
     private var motionSnapshot = MotionProcessingSnapshot()
@@ -151,7 +154,8 @@ final class MotionServiceDevice: MotionServiceType {
                 locomotionSurface: s.locomotionSurface,
                 treadmillUsesBeltSpeed: s.treadmillDistanceUsesBeltSpeed,
                 treadmillBeltMps: s.treadmillBeltSpeedMps,
-                paceSessionKind: s.paceSessionKind
+                paceSessionKind: s.paceSessionKind,
+                carryMode: s.carryMode
             ),
             bodyTransform: s.bodyTransform,
             orientationQualityGood: s.orientationQuality?.isGood ?? false,
@@ -224,6 +228,37 @@ final class MotionServiceDevice: MotionServiceType {
             heightCm: snap0.heightCm
         )
         peakGsRing.removeAll()
+
+        pedCadence.stop()
+        let pedSnap = readMotionSnapshot()
+        let usePedCadence =
+            pedSnap.carryMode == .handheld
+            && pedSnap.integration.locomotionSurface != .treadmill
+            && CMPedometer.isStepCountingAvailable()
+        if usePedCadence {
+            let startPed = Date()
+            pedCadence.start(from: startPed, targetQueue: queue) { [weak self] spm in
+                guard let self else { return }
+                let snap = self.readMotionSnapshot()
+                guard snap.carryMode == .handheld,
+                      snap.integration.locomotionSurface != .treadmill
+                else { return }
+
+                var stride = max(self.lastStrideM, 0.28)
+                if stride < 0.42 {
+                    stride = LocomotionMath.strideLengthMeters(
+                        peakAccelG: 0.48,
+                        weinbergK: snap.weinbergK,
+                        heightCm: snap.heightCm
+                    )
+                }
+                self.fusion.ingestCadenceBackedSpeed(
+                    strideLengthM: stride,
+                    cadenceSPM: spm,
+                    paceKind: snap.integration.paceSessionKind
+                )
+            }
+        }
 
         mm.deviceMotionUpdateInterval = 1.0 / 100.0
         let frame = Self.attitudeFrameForLocomotion()
@@ -395,6 +430,7 @@ final class MotionServiceDevice: MotionServiceType {
     }
 
     func stop() {
+        pedCadence.stop()
         mm.stopDeviceMotionUpdates()
         lastMotionTimestamp = nil
     }
@@ -461,7 +497,8 @@ final class MotionServiceSim: MotionServiceType {
                     locomotionSurface: s.locomotionSurface,
                     treadmillUsesBeltSpeed: s.treadmillDistanceUsesBeltSpeed,
                     treadmillBeltMps: s.treadmillBeltSpeedMps,
-                    paceSessionKind: s.paceSessionKind
+                    paceSessionKind: s.paceSessionKind,
+                    carryMode: s.carryMode
                 )
                 self.fusionStub.ingestMotionTick(dt: 0.5, params: params)
                 self.fusionStub.ingestWalkStepSpeed(strideLengthM: stride, stepPeriod: 0.5, paceKind: params.paceSessionKind)

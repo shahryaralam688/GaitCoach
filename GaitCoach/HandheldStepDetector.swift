@@ -65,7 +65,7 @@ final class HandheldStepDetector {
         let hist = samples.map(\.score)
         let med = median(hist.suffix(140))
         let mad = medianAbsoluteDeviation(hist.suffix(140), median: med)
-        let thresh = med + (carryMode == .handheld ? 4.2 : 3.4) * mad
+        let thresh = med + (carryMode == .handheld ? 4.55 : 3.4) * mad
 
         let iLast = samples.count - 1
         let s0 = samples[iLast].score
@@ -78,10 +78,18 @@ final class HandheldStepDetector {
             return legacyPocketIfNeeded(fwd: fwd, calibrationOK: calibrationOK, carryMode: carryMode, timestamp: timestamp, magMs2: magMs2)
         }
 
+        let peakWin = samples.suffix(28).map(\.magMs2).max() ?? magMs2
+        // Screen-view handheld: reject tiny jerk impulses that briefly cross the adaptive threshold.
+        if carryMode == .handheld {
+            guard peakWin >= 2.45 else {
+                fwdPrev = fwd
+                return nil
+            }
+        }
+
         lastStepTS = timestamp
         fwdPrev = fwd
 
-        let peakWin = samples.suffix(28).map(\.magMs2).max() ?? magMs2
         _ = gyroMag
         return max(peakWin, magMs2)
     }
@@ -92,7 +100,8 @@ final class HandheldStepDetector {
 
     private func score(hpUp: Double, hpFwd: Double, carryMode: CarryMode) -> Double {
         switch carryMode {
-        case .handheld: return hpUp + 0.12 * hpFwd
+        // Watching the phone reduces vertical coupling vs pocket — arm swing shows more in forward-axis HP.
+        case .handheld: return 0.38 * hpUp + 0.62 * hpFwd
         case .pocket: return 0.55 * hpUp + 0.45 * hpFwd
         }
     }

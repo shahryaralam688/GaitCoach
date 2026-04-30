@@ -7,6 +7,8 @@ struct LocomotionIntegrationParams: Sendable {
     var treadmillBeltMps: Double
     /// Walk vs Run session mode — affects step pacing gates and decay (motion layer reads from settings).
     var paceSessionKind: PaceSessionKind = .walk
+    /// Pocket vs handheld — handheld uses slower speed decay + optional CMPedometer cadence blend.
+    var carryMode: CarryMode = .handheld
 }
 
 /// Pure math helpers (testable without device motion).
@@ -125,10 +127,33 @@ final class LocomotionFusion {
             return
         }
 
-        // Run cadence is higher — avoid bleeding pace to zero between strikes when ticks miss occasionally.
-        let tau = params.paceSessionKind == .run ? 2.05 : 1.45
+        // Handheld “looking at screen” has weaker IMU strikes — decay slower so CMPedometer cadence can sustain pace.
+        let tau: Double
+        switch (params.paceSessionKind, params.carryMode) {
+        case (.run, .handheld): tau = 2.35
+        case (.run, _): tau = 2.05
+        case (_, .handheld): tau = 2.65
+        default: tau = 1.45
+        }
         speedEMA *= exp(-dt / tau)
         if speedEMA < 0.035 { speedEMA = 0 }
+        speedMps = speedEMA
+    }
+
+    /// Pace from Apple-estimated cadence × stride (handheld viewing — complements sporadic accel strikes).
+    func ingestCadenceBackedSpeed(strideLengthM: Double, cadenceSPM: Double, paceKind: PaceSessionKind) {
+        lock.lock()
+        defer { lock.unlock() }
+        let stride = max(0.30, min(2.0, strideLengthM))
+        let minCad = paceKind == .run ? 78.0 : 36.0
+        let maxCad = paceKind == .run ? 215.0 : 178.0
+        guard cadenceSPM >= minCad, cadenceSPM <= maxCad else { return }
+
+        let stepsPerSec = cadenceSPM / 60.0
+        let maxInst = paceKind == .run ? 7.2 : 5.3
+        let instSpeed = min(maxInst, stride * stepsPerSec)
+        let cadAlpha = 0.10
+        speedEMA = speedEMA == 0 ? instSpeed : (cadAlpha * instSpeed + (1 - cadAlpha) * speedEMA)
         speedMps = speedEMA
     }
 
