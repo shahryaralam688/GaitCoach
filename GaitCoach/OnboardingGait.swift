@@ -4,6 +4,7 @@ private let onboardingGateAccent = Color(red: 39/255, green: 77/255, blue: 67/25
 
 struct OnboardingGate: View {
     @AppStorage("didOnboard") private var didOnboard = false
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         TabView {
@@ -19,6 +20,7 @@ struct OnboardingGate: View {
         .overlay(alignment: .bottom) {
             Button {
                 didOnboard = true
+                dismiss()
             } label: {
                 Text("Get started")
                     .font(.headline)

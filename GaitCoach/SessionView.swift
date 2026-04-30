@@ -154,9 +154,12 @@ struct SessionView: View {
 
                         HStack(spacing: 28) {
                             metric("Distance", formatDistance(motion.distanceM))
-                            metric("Speed", String(format: "%.2f km/h", displaySpeedKmh))
+                            metric("Live speed", String(format: "%.2f km/h", motion.speedMps * 3.6))
                             metric("Heading", String(format: "%.0f°", motion.headingDeg))
                         }
+                        Text("No GPS — speed updates from phone motion & steps in real time.")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
 
                         if settings.paceTargetCoachingEnabled && isRunning {
                             paceCoachBanner(

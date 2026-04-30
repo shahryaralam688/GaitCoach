@@ -45,6 +45,11 @@ struct AppTabView: View {
                 GCThemeAppearance.applyDefaultNavBar()
             }
         }
+        .onChange(of: didOnboard) { _, finished in
+            if finished {
+                showOnboarding = false
+            }
+        }
         
         .onChange(of: router.selected) { _, newValue in
             if darkHeaderTabs.contains(newValue) {
